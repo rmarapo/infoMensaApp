@@ -19,6 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import mensa.info.application.org.infomensaapp.service.MenuDelGiornoService;
 import mensa.info.application.org.infomensaapp.service.DownloadAbstractService;
 import mensa.info.application.org.infomensaapp.service.DownloadResultReceiver;
@@ -27,6 +31,12 @@ public class MensaMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         DownloadResultReceiver.Receiver
 {
+
+    private static final String URL_SERVER = "http://10.2.2.10:8080/help/"; //Giuseppe.
+
+    private Date menu_date = Calendar.getInstance().getTime();
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    private SimpleDateFormat sdfHuman = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -93,44 +103,6 @@ public class MensaMainActivity extends AppCompatActivity
         {
 //          eseguo la chiamata al server.
             makeToast("menu del giorno ", false);
-//            final TextView mTextView = (TextView) findViewById(R.id.text);
-//            TextView mcorpoText = (TextView) findViewById(R.id.corpo_text);
-//            mcorpoText.setText("Menu Del Griono");
-//            // Instantiate the RequestQueue.
-//                            RequestQueue queue = Volley.newRequestQueue(this);
-//                        String url ="http://www.google.com";
-//
-//            // Request a string response from the provided URL.
-//                        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                                new Response.Listener<String>() {
-//                                    @Override
-//                                    public void onResponse(String response) {
-//                                        // Display the first 500 characters of the response string.
-//                                        makeToast("Response is: " + response.substring(0, 500));
-//                                    }
-//                                }, new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                makeToast("That didn't work!");
-////                                mTextView.setText("That didn't work!");
-//                            }
-//                        });
-//            // Add the request to the RequestQueue.
-//                        queue.add(stringRequest);
-
-
-//            MenuDelGiornoBean bean = new MenuDelGiornoBean("prova", 0d, 0d);
-//
-//            startService(createCallingIntent(bean));
-
-//            GetConnectionTask task = new GetConnectionTask();
-//            try
-//            {
-//                task.execute(new URL("http://www.google.it"));
-//            } catch (MalformedURLException e)
-//            {
-//                e.printStackTrace();
-//            }
             startIntent();
 
         } else if (id == R.id.nav_presenze)
@@ -162,9 +134,8 @@ public class MensaMainActivity extends AppCompatActivity
         DownloadResultReceiver mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, MenuDelGiornoService.class);
-
         /* Send optional extras to Download IntentService */
-        intent.putExtra("url", "http://www.google.it");
+        intent.putExtra("url", URL_SERVER + "mensa?step=getMenuGiorno&data="+sdf.format(menu_date)+"&cf=GRSGPP76D12G999F");
         intent.putExtra("receiver", mReceiver);
         intent.putExtra("requestId", 101);
 
@@ -174,10 +145,14 @@ public class MensaMainActivity extends AppCompatActivity
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData)
     {
+        final TextView mTextView = (TextView) findViewById(R.id.textList);
+
         switch (resultCode)
         {
             case DownloadAbstractService.STATUS_RUNNING:
-                setProgressBarIndeterminateVisibility(true);
+//                setProgressBarIndeterminateVisibility(true);
+                mTextView.setText("sto elaborando...");
+                mTextView.setVisibility(TextView.VISIBLE);
                 break;
             case DownloadAbstractService.STATUS_FINISHED:
                 /* Hide progress & extract result from bundle */
@@ -185,10 +160,11 @@ public class MensaMainActivity extends AppCompatActivity
                 String[] results = resultData.getStringArray("result");
 
                 final ListView mListView = (ListView) findViewById(R.id.pastoList);
-                final TextView mTextView = (TextView) findViewById(R.id.textList);
+                mTextView.setText(R.string.header_list);
+                mTextView.append(" " + sdfHuman.format(menu_date));
                 mTextView.setVisibility(TextView.VISIBLE);
 
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, results);
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, results);
                 mListView.setAdapter(adapter);
 
                 break;
@@ -212,7 +188,6 @@ public class MensaMainActivity extends AppCompatActivity
         }
 
         this.doubleBackToExitPressedOnce = true;
-//        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
         makeToast("Premi ancora Esc per uscire...");
 
         new Handler().postDelayed(new Runnable()

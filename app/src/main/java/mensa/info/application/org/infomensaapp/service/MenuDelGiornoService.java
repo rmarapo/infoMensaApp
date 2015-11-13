@@ -53,33 +53,31 @@ public class MenuDelGiornoService extends DownloadAbstractService
     protected String[] parseResult(String result)
     {
 
-        String[] blogTitles = null;
+        String[] composizioneMenu = null;
 
-        blogTitles = new String[4];
+        try
+        {
+            JSONObject response = new JSONObject(result);
+            JSONArray menu = response.optJSONArray("menu");
+            composizioneMenu = new String[menu.length()];
+            for (int i = 0; i < menu.length(); i++)
+            {
+                JSONObject post = menu.optJSONObject(i);
+                String title = post.optString("descrizione");
+                composizioneMenu[i] = title;
 
-        blogTitles[0] = "Pasta al ragu di manzo";
-        blogTitles[1] = "Stracchino";
-        blogTitles[2] = "Insalata mista";
-        blogTitles[3] = "budino";
+            }
+            for (int i = 0; i < menu.length(); i++)
+            {
+                Log.d(TAG, "elemento : " + composizioneMenu[i]);
 
-//        try
-//        {
-//            JSONObject response = new JSONObject(result);
-//            JSONArray posts = response.optJSONArray("posts");
-//            blogTitles = new String[posts.length()];
-//
-//            for (int i = 0; i < posts.length(); i++)
-//            {
-//                JSONObject post = posts.optJSONObject(i);
-//                String title = post.optString("title");
-//                blogTitles[i] = title;
-//            }
+            }
 
 
-//        } catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//        }
-        return blogTitles;
+        } catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return composizioneMenu;
     }
 }
