@@ -8,10 +8,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+
+import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
 /**
  * Creato da Giuseppe Grosso in data 13/11/15.
@@ -53,12 +58,12 @@ public abstract class DownloadAbstractService extends IntentService implements D
 
             try
             {
-                String[] results = downloadData(url);
+                List<Menu> results = (List<Menu>)downloadData(url);
 
                 /* Sending result back to activity */
-                if (null != results && results.length > 0)
+                if (null != results)
                 {
-                    bundle.putStringArray("result", results);
+                    bundle.putByteArray("result", object2Bytes(results));
                     receiver.send(STATUS_FINISHED, bundle);
                 }
             } catch (Exception e)
@@ -73,7 +78,17 @@ public abstract class DownloadAbstractService extends IntentService implements D
         this.stopSelf();
     }
 
-    public String[] downloadData(String requestUrl) throws IOException, DownloadException
+    /**
+     * Converting objects to byte arrays
+     */
+    static public byte[] object2Bytes( Object o ) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream( baos );
+        oos.writeObject(o);
+        return baos.toByteArray();
+    }
+
+    public Object downloadData(String requestUrl) throws IOException, DownloadException
     {
         InputStream inputStream = null;
         HttpURLConnection urlConnection = null;
@@ -97,7 +112,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
         {
             inputStream = new BufferedInputStream(urlConnection.getInputStream());
             String response = convertInputStreamToString(inputStream);
-            String[] results = parseResult(response);
+            Object results = parseResult(response);
             return results;
         } else
         {
@@ -105,7 +120,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
         }
     }
 
-    protected abstract String[] parseResult(String response);
+    protected abstract Object parseResult(String response);
 
     protected abstract String convertInputStreamToString(InputStream inputStream) throws IOException;
 

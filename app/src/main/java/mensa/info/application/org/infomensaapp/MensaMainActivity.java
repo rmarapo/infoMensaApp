@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,10 +20,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
 import mensa.info.application.org.infomensaapp.service.MenuDelGiornoService;
 import mensa.info.application.org.infomensaapp.service.DownloadAbstractService;
 import mensa.info.application.org.infomensaapp.service.DownloadResultReceiver;
@@ -33,6 +39,7 @@ public class MensaMainActivity extends AppCompatActivity
 {
 
     private static final String URL_SERVER = "http://10.2.2.10:8080/help/"; //Giuseppe.
+    private DrawerLayout drawer = null;
 
     private Date menu_date = Calendar.getInstance().getTime();
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -57,9 +64,11 @@ public class MensaMainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        this.drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -101,10 +110,7 @@ public class MensaMainActivity extends AppCompatActivity
 
         if (id == R.id.nav_menugiorno)
         {
-//          eseguo la chiamata al server.
-            makeToast("menu del giorno ", false);
-            startIntent();
-
+            startMenuManager();
         } else if (id == R.id.nav_presenze)
         {
             makeToast("presenze a mensa", false);
@@ -127,6 +133,39 @@ public class MensaMainActivity extends AppCompatActivity
         return true;
     }
 
+    private void startMenuManager()
+    {
+        MenuDelGiornoManager manager = new MenuDelGiornoManager();
+        List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F");
+
+        final ListView mListView = (ListView) findViewById(R.id.pastoList);
+        final TextView mTextView = (TextView) findViewById(R.id.textList);
+
+        mTextView.setText(R.string.header_list);
+        mTextView.append(" " + sdfHuman.format(menu_date));
+        mTextView.setVisibility(TextView.VISIBLE);
+
+        Log.d(this.getClass().getName(), "TROVATO IL MENU: " + allMenu.size());
+
+        // non so come fare!!!
+        if (allMenu != null && allMenu.size() > 0)
+        {
+            Log.d(this.getClass().getName(), "ripreso il menu dal database");
+            String[] results = new String[allMenu.size()];
+
+            for (int i = 0; i < allMenu.size(); i++)
+                results[i] = allMenu.get(i).getDescrizione();
+
+            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, results);
+            mListView.setAdapter(adapter);
+
+        } else
+        {
+            Log.d(this.getClass().getName(), "chiamo il servlet.");
+            makeToast("nessun dato trovato sul database, li recupero dal server ...");
+            startIntent();
+        }
+    }
 
     public void startIntent()
     {
@@ -135,7 +174,7 @@ public class MensaMainActivity extends AppCompatActivity
         mReceiver.setReceiver(this);
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, MenuDelGiornoService.class);
         /* Send optional extras to Download IntentService */
-        intent.putExtra("url", URL_SERVER + "mensa?step=getMenuGiorno&data="+sdf.format(menu_date)+"&cf=GRSGPP76D12G999F");
+        intent.putExtra("url", URL_SERVER + "mensa?step=getMenuGiorno&data=" + sdf.format(menu_date) + "&cf=GRSGPP76D12G999F");
         intent.putExtra("receiver", mReceiver);
         intent.putExtra("requestId", 101);
 
@@ -157,15 +196,37 @@ public class MensaMainActivity extends AppCompatActivity
             case DownloadAbstractService.STATUS_FINISHED:
                 /* Hide progress & extract result from bundle */
                 setProgressBarIndeterminateVisibility(false);
-                String[] results = resultData.getStringArray("result");
+                mTextView.setText("sto recuperando i dati...");
+                Object objallMenu = null;
+                try
+                {
+                    objallMenu = bytes2Object((byte[]) resultData.get("result"));
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+                List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = (List<mensa.info.application.org.infomensaapp.sql.model.Menu>) objallMenu;
 
                 final ListView mListView = (ListView) findViewById(R.id.pastoList);
                 mTextView.setText(R.string.header_list);
                 mTextView.append(" " + sdfHuman.format(menu_date));
                 mTextView.setVisibility(TextView.VISIBLE);
 
+                String[] results = new String[allMenu.size()];
+
+                for (int i = 0; i < allMenu.size(); i++)
+                    results[i] = allMenu.get(i).getDescrizione();
+
+
                 final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, results);
                 mListView.setAdapter(adapter);
+
+                // aggiorno i dati sul dbase.
+                MenuDelGiornoManager manager = new MenuDelGiornoManager();
+                manager.setMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F", results);
 
                 break;
             case DownloadAbstractService.STATUS_ERROR:
@@ -174,6 +235,18 @@ public class MensaMainActivity extends AppCompatActivity
                 Toast.makeText(this, error, Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    /**
+     * Converting byte arrays to objects
+     */
+    static public Object bytes2Object(byte raw[])
+            throws IOException, ClassNotFoundException
+    {
+        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Object o = ois.readObject();
+        return o;
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -187,17 +260,26 @@ public class MensaMainActivity extends AppCompatActivity
             return;
         }
 
-        this.doubleBackToExitPressedOnce = true;
-        makeToast("Premi ancora Esc per uscire...");
-
-        new Handler().postDelayed(new Runnable()
+        if (this.drawer.isDrawerOpen(GravityCompat.START))
         {
-            @Override
-            public void run()
+            this.drawer.closeDrawer(GravityCompat.START);
+        }
+        else
+        {
+            this.doubleBackToExitPressedOnce = true;
+            makeToast("Premi ancora Esc per uscire...");
+            new Handler().postDelayed(new Runnable()
             {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
+                @Override
+                public void run()
+                {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
+
+
+
     }
 
     /**

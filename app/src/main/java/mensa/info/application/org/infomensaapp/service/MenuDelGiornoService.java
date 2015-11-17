@@ -1,9 +1,5 @@
 package mensa.info.application.org.infomensaapp.service;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.ResultReceiver;
-import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -14,6 +10,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
 /**
  * Creato da Giuseppe Grosso in data 13/11/15.
@@ -50,27 +50,23 @@ public class MenuDelGiornoService extends DownloadAbstractService
         return result;
     }
 
-    protected String[] parseResult(String result)
+    protected Object parseResult(String result)
     {
 
-        String[] composizioneMenu = null;
+        List<Menu> menuList = new ArrayList<>();
 
         try
         {
             JSONObject response = new JSONObject(result);
-            JSONArray menu = response.optJSONArray("menu");
-            composizioneMenu = new String[menu.length()];
-            for (int i = 0; i < menu.length(); i++)
-            {
-                JSONObject post = menu.optJSONObject(i);
-                String title = post.optString("descrizione");
-                composizioneMenu[i] = title;
 
-            }
-            for (int i = 0; i < menu.length(); i++)
-            {
-                Log.d(TAG, "elemento : " + composizioneMenu[i]);
+            JSONArray dieta = response.optJSONArray("menu");
 
+            for (int i = 0; i < dieta.length()-1; i++)
+            {
+                JSONObject sdieta = dieta.optJSONObject(i);
+
+                menuList.add(new Menu(sdieta.getString("codice_fiscale"), sdieta.getString("descrizione")));
+                Log.d(TAG, "elemento : " + sdieta.getString("codice_fiscale") + " " + sdieta.getString("descrizione"));
             }
 
 
@@ -78,6 +74,6 @@ public class MenuDelGiornoService extends DownloadAbstractService
         {
             e.printStackTrace();
         }
-        return composizioneMenu;
+        return menuList;
     }
 }

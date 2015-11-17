@@ -8,5 +8,5 @@ import java.io.IOException;
 public interface DownloadInterfaceService
 {
     // successivamente effettuare ritorno di oggetto json.
-    String[] downloadData(String requestUrl) throws IOException, Exception;
+    Object downloadData(String requestUrl) throws IOException, Exception;
 }
