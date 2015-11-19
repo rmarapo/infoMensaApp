@@ -11,8 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
+import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
 /**
@@ -28,28 +31,12 @@ public class MenuDelGiornoService extends DownloadAbstractService
         super(MenuDelGiornoService.class.getName());
     }
 
-
-    protected String convertInputStreamToString(InputStream inputStream) throws IOException
-    {
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-
-        while ((line = bufferedReader.readLine()) != null)
-        {
-            result += line;
-        }
-
-            /* Close Stream */
-        if (null != inputStream)
-        {
-            inputStream.close();
-        }
-
-        return result;
-    }
-
+    /**
+     * eseguo il parsing dei risultati e li restituisco nel bundle.
+     *
+     * @param result
+     * @return
+     */
     protected Object parseResult(String result)
     {
 
@@ -61,12 +48,12 @@ public class MenuDelGiornoService extends DownloadAbstractService
 
             JSONArray dieta = response.optJSONArray("menu");
 
-            for (int i = 0; i < dieta.length()-1; i++)
+            for (int i = 0; i < dieta.length() - 1; i++)
             {
                 JSONObject sdieta = dieta.optJSONObject(i);
 
                 menuList.add(new Menu(sdieta.getString("codice_fiscale"), sdieta.getString("descrizione")));
-                Log.d(TAG, "elemento : " + sdieta.getString("codice_fiscale") + " " + sdieta.getString("descrizione"));
+
             }
 
 
@@ -75,5 +62,50 @@ public class MenuDelGiornoService extends DownloadAbstractService
             e.printStackTrace();
         }
         return menuList;
+    }
+
+    @Override
+    protected Object retriveDataFromDbase(String url)
+    {
+        // prendo i dati del menu del giorno.
+        MenuDelGiornoManager manager = new MenuDelGiornoManager();
+        List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F");
+
+        // non so come fare!!!
+        if (allMenu != null && allMenu.size() > 0)
+        {
+            return allMenu;
+        }
+
+        // se non ho trovato i dati di menu personali prendo la dieta normale.
+        allMenu = manager.getMenuDelGiornoStandard(this.getApplicationContext(), Calendar.getInstance());
+        if (allMenu != null && allMenu.size() > 0)
+        {
+            return allMenu;
+        }
+
+        return null;
+    }
+
+    /**
+     * metodo per lo store dei dati.
+     *
+     * @param data
+     * @return
+     */
+    @Override
+    protected void storeData(Object data)
+    {
+        List<Menu> lmenu = (List<Menu>) data;
+        Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + lmenu.size());
+
+        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+        Menu mn = null;
+        for (int i = 0; i < lmenu.size(); i++)
+        {
+            mn = lmenu.get(i);
+            Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + mn.getDescrizione() + " " + mn.getData());
+            db.createMenu(mn);
+        }
     }
 }

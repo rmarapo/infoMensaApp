@@ -1,4 +1,4 @@
-package mensa.info.application.org.infomensaapp.service;
+package mensa.info.application.org.infomensaapp.service.interfaces;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package mensa.info.application.org.infomensaapp.service;
+package mensa.info.application.org.infomensaapp.service.interfaces;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,9 +8,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,9 +33,9 @@ public abstract class DownloadAbstractService extends IntentService implements D
 
 
     /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
+     * Creo un IntentService.
      *
-     * @param name Used to name the worker thread, important only for debugging.
+     * @param name Usato solo per creare il worker thread, importante solo per debugging.
      */
     public DownloadAbstractService(String name)
     {
@@ -43,87 +45,124 @@ public abstract class DownloadAbstractService extends IntentService implements D
     @Override
     protected void onHandleIntent(Intent intent)
     {
-
         Log.d(TAG, "Service Started!");
 
+        // prendo la classe di receiver
         final ResultReceiver receiver = intent.getParcelableExtra("receiver");
+        // recupero la url impostata nell'activity
         String url = intent.getStringExtra("url");
 
+        // istanzio oggetto bundle come contenitore dei dati.
         Bundle bundle = new Bundle();
 
+        // se la url non è vuota ... procedo
         if (!TextUtils.isEmpty(url))
         {
-            /* Update UI: Download Service is Running */
+            /* Aggiorno la UI: il servizio di Download Service è in Running */
             receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-
+            Object results = null;
             try
             {
-                List<Menu> results = (List<Menu>)downloadData(url);
+                // cerco i dati nel database
+                results = retriveDataFromDbase(url);
+                // se non li trovo li chiedo al server
+                if (results == null) results = downloadData(url);
 
-                /* Sending result back to activity */
-                if (null != results)
+                /* rimando i dati indietro all'activity */
+                if (results != null)
                 {
+                    // i dati li trasformo in array di byte
                     bundle.putByteArray("result", object2Bytes(results));
                     receiver.send(STATUS_FINISHED, bundle);
                 }
             } catch (Exception e)
             {
 
-                /* Sending error message back to activity */
+                /* invio un messaggio di errore indietro all'activity */
                 bundle.putString(Intent.EXTRA_TEXT, e.toString());
                 receiver.send(STATUS_ERROR, bundle);
             }
         }
-        Log.d(TAG, "Service Stopping!");
+        Log.d(TAG, "Fine servizio Download.");
         this.stopSelf();
     }
 
     /**
-     * Converting objects to byte arrays
+     * converto l'oggetto (deve implementare serializable) in byte arrays
      */
-    static public byte[] object2Bytes( Object o ) throws IOException {
+    static public byte[] object2Bytes(Object o) throws IOException
+    {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( baos );
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(o);
         return baos.toByteArray();
     }
 
+    /**
+     * effettuo la chiamata http
+     *
+     * @param requestUrl
+     * @return
+     * @throws IOException
+     * @throws DownloadException
+     */
     public Object downloadData(String requestUrl) throws IOException, DownloadException
     {
         InputStream inputStream = null;
         HttpURLConnection urlConnection = null;
 
-        /* forming th java.net.URL object */
+        /* formo l'oggetto java java.net.URL */
         URL url = new URL(requestUrl);
         urlConnection = (HttpURLConnection) url.openConnection();
 
-        /* optional request header */
+        /* opzionale request header */
         urlConnection.setRequestProperty("Content-Type", "application/json");
 
-        /* optional request header */
+        /* opzionale request header */
         urlConnection.setRequestProperty("Accept", "application/json");
 
-        /* for Get request */
+        /* chiamata in Get */
         urlConnection.setRequestMethod("GET");
         int statusCode = urlConnection.getResponseCode();
 
-        /* 200 represents HTTP OK */
+        /* 200 rappresenta HTTP OK */
         if (statusCode == 200)
         {
             inputStream = new BufferedInputStream(urlConnection.getInputStream());
             String response = convertInputStreamToString(inputStream);
             Object results = parseResult(response);
+
+            // chiamata alla classe implementativa per lo store dei dati su database locale.
+            storeData(results);
+
             return results;
         } else
         {
-            throw new DownloadException("Failed to fetch data!!");
+            throw new DownloadException("Errore nel fetch dei dati");
         }
     }
 
-    protected abstract Object parseResult(String response);
 
-    protected abstract String convertInputStreamToString(InputStream inputStream) throws IOException;
+    protected String convertInputStreamToString(InputStream inputStream) throws IOException
+    {
 
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+
+        while ((line = bufferedReader.readLine()) != null)
+        {
+            result += line;
+        }
+
+            /* Close Stream */
+        if (null != inputStream)
+        {
+            inputStream.close();
+        }
+
+        return result;
+    }
 
     public class DownloadException extends Exception
     {
@@ -138,4 +177,15 @@ public abstract class DownloadAbstractService extends IntentService implements D
             super(message, cause);
         }
     }
+
+    // metodo per il parsing dei dati.
+    protected abstract Object parseResult(String response);
+
+
+    protected abstract Object retriveDataFromDbase(String url);
+
+    // metodo per lo store dei dati.
+    protected abstract void storeData(Object data);
+
+
 }

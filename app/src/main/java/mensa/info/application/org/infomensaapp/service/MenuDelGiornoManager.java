@@ -12,13 +12,17 @@ import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
 /**
- * Creato da giuseppegrosso in data 16/11/15.
+ * Creato da Giuseppe Grosso in data 16/11/15.
  */
 public class MenuDelGiornoManager
 {
     // Logcat tag
     private static final String LOG = MenuDelGiornoManager.class.getName();
 
+    public MenuDelGiornoManager()
+    {
+
+    }
 
     public List<Menu> getMenuDelGiorno(Context context, String cf)
     {
@@ -32,8 +36,7 @@ public class MenuDelGiornoManager
 
     public List<Menu> getMenuDelGiorno(Context context, Calendar data, String cf)
     {
-        // Getting all Todos
-        Log.d(LOG, "Prendo il menu");
+        Log.d(LOG, "Prendo il menu dal database");
         DatabaseHelper db = new DatabaseHelper(context);
         String sData = MenuDelGiornoManager.getDateTime(data, "yyyy-MM-dd");
         List<Menu> allMenus = db.getPastoPersonaleByDate(sData, cf);
@@ -42,14 +45,23 @@ public class MenuDelGiornoManager
 
     public void setMenuDelGiorno(Context context, Calendar data, String cf, String[] results)
     {
-        // Getting all Todos
-        Log.d(LOG, "scrivo il menu");
+        Log.d(LOG, "scrivo il menu su database");
         DatabaseHelper db = new DatabaseHelper(context);
         Menu menu = null;
         for (int i = 0; i < results.length; i++)
         {
             menu = new Menu(data, cf, results[i]);
             db.createMenu(menu);
+        }
+    }
+
+    public void setMenuDelGiorno(Context context, List<Menu> results)
+    {
+        Log.d(LOG, "scrivo il menu");
+        DatabaseHelper db = new DatabaseHelper(context);
+        for (int i = 0; i < results.size(); i++)
+        {
+            db.createMenu(results.get(i));
         }
     }
 

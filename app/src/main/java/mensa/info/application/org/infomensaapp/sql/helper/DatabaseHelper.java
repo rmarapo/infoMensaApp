@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import mensa.info.application.org.infomensaapp.sql.model.Login;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
 /**
@@ -32,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     // Table Names
     private static final String TABLE_MENU = "menu";
+    private static final String TABLE_LOGIN = "login";
 
     // Common column names
     private static final String KEY_ID = "id";
@@ -43,6 +45,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String DESC_MENU = "desc";
     private static final String CONSISTENTE_MENU = "consistente";
 
+    private static final String DATA_LOGIN = "data";
+    private static final String CF_LOGIN = "cf";
+    private static final String CI_LOGIN = "ci";
+
 
     // Creazione tabella
     // Menu statement di creazione
@@ -51,6 +57,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
             + " DATE," + CF_MENU + " TEXT," + DESC_MENU + " TEXT," + CONSISTENTE_MENU + " INTEGER," + KEY_CREATED_AT
             + " DATETIME" + ")";
 
+    private static final String CREATE_TABLE_LOGIN = "CREATE TABLE "
+            + TABLE_LOGIN + "(" + KEY_ID + " INTEGER PRIMARY KEY," + DATA_LOGIN
+            + " DATE," + CF_LOGIN + " TEXT," + CI_LOGIN + " TEXT," + KEY_CREATED_AT
+            + " DATETIME" + ")";
 
     public DatabaseHelper(Context context)
     {
@@ -63,6 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         // creazione delle tabelle
         db.execSQL(CREATE_TABLE_MENU);
+        db.execSQL(CREATE_TABLE_LOGIN);
         // inserisci le altre tabelle qui sotto...
     }
 
@@ -71,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
         // inserisci le altre tabelle qui sotto...
 
         // creazione del database ...
@@ -243,6 +255,147 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     // cancellazione per cf e data.
+
+
+    // ------------------------ "login" metodi della tabella ----------------//
+
+
+    /*
+     * Creazione della tabella Menu
+     */
+    public long createLogin(String cf, String ci)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert row
+        long login_id = db.insert(TABLE_LOGIN, null, getContentFromLogin(cf, ci));
+
+        return login_id;
+    }
+
+    private ContentValues getContentFromLogin(String cf, String ci)
+    {
+        ContentValues values = new ContentValues();
+        values.put(DATA_LOGIN, getDate());
+        values.put(CF_LOGIN, cf);
+        values.put(CI_LOGIN, ci);
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        return values;
+    }
+
+    /**
+     * ottengo l'elemento di Login
+     */
+    public Login getLogin(long login_id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN + " WHERE "
+                + KEY_ID + " = " + login_id;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        return getLoginFromCursor(c);
+    }
+
+    private Login getLoginFromCursor(Cursor c)
+    {
+        Login mn = new Login();
+        mn.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        mn.setData(c.getString(c.getColumnIndex(DATA_LOGIN)));
+        mn.setCf((c.getString(c.getColumnIndex(CF_LOGIN))));
+        mn.setCi((c.getString(c.getColumnIndex(CI_LOGIN))));
+        mn.setCreatedat(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+        return mn;
+    }
+
+    /**
+     * ottengo tutto l'oggetto login
+     */
+    public List<Login> getLoginByCFCI(String cf, String ci)
+    {
+        List<Login> logins = new ArrayList<Login>();
+        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN + " l WHERE"
+                + " l." + CF_LOGIN + " "
+                + " = '" + cf + "'"
+                + " AND l." + CI_LOGIN + " "
+                + " = '" + ci + "'";
+
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst())
+        {
+            do
+            {
+                // aggiungo il menu alla lista.
+                logins.add(getLoginFromCursor(c));
+            } while (c.moveToNext());
+        }
+
+        return logins;
+    }
+
+    /**
+     * ritorna true se esiste un record di login
+     */
+    public boolean isLogin()
+    {
+        return getLoginCount() > 0;
+    }
+    /**
+     * numero di login
+     */
+    public int getLoginCount()
+    {
+        return getLoginCountByCFCI(null, null);
+    }
+    /**
+     * numero di login
+     */
+    public int getLoginCountByCFCI(String cf, String ci)
+    {
+        String countQuery = "SELECT  * FROM " + TABLE_LOGIN + " l";
+        if (cf != null || ci != null)
+        {
+            countQuery += " WHERE";
+
+            if (cf != null)
+                countQuery += " l." + CF_LOGIN + " = '" + cf;
+            if (cf != null)
+                countQuery += " AND l." + CI_LOGIN + " = '" + ci;
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+
+        // return count
+        return count;
+    }
+
+    /**
+     * Deleting a Login
+     */
+    public void deleteLogin(long login_id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_LOGIN, KEY_ID + " = ?",
+                new String[]{String.valueOf(login_id)});
+    }
 
     /************************************************************************************************
      * Metodi di comodo.

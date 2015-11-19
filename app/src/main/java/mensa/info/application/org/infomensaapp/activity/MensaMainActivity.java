@@ -1,4 +1,4 @@
-package mensa.info.application.org.infomensaapp;
+package mensa.info.application.org.infomensaapp.activity;
 
 import android.content.Intent;
 import android.net.MailTo;
@@ -28,10 +28,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
+import mensa.info.application.org.infomensaapp.R;
 import mensa.info.application.org.infomensaapp.service.MenuDelGiornoService;
-import mensa.info.application.org.infomensaapp.service.DownloadAbstractService;
-import mensa.info.application.org.infomensaapp.service.DownloadResultReceiver;
+import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
+import mensa.info.application.org.infomensaapp.service.interfaces.DownloadResultReceiver;
+import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 
 public class MensaMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -52,6 +53,8 @@ public class MensaMainActivity extends AppCompatActivity
         setContentView(R.layout.activity_mensa_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (!isLoginActivated())
+            startActivity(new Intent(this, LoginActivity.class));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener()
@@ -59,8 +62,7 @@ public class MensaMainActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                emailIntent();
-
+                startEmailIntent();
             }
         });
 
@@ -74,6 +76,15 @@ public class MensaMainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private boolean isLoginActivated()
+    {
+        // dalle banca dati vado a prendere i dati se esistono
+        // non propongo la login altrimenti si.
+        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+
+        return db.isLogin();
     }
 
 
@@ -113,19 +124,17 @@ public class MensaMainActivity extends AppCompatActivity
             startMenuManager();
         } else if (id == R.id.nav_presenze)
         {
-            makeToast("presenze a mensa", false);
-
+//            startActivity(new Intent(this, PresenzeActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.nav_conto)
         {
-            makeToast("estratto conto", false);
+//            startActivity(new Intent(this, ContoActivity.class));
         } else if (id == R.id.nav_settings)
         {
-            makeToast("settings", false);
-
+//            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_email)
         {
-            makeToast("email", false);
-            emailIntent();
+            startEmailIntent();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -135,9 +144,6 @@ public class MensaMainActivity extends AppCompatActivity
 
     private void startMenuManager()
     {
-        MenuDelGiornoManager manager = new MenuDelGiornoManager();
-        List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F");
-
         final ListView mListView = (ListView) findViewById(R.id.pastoList);
         final TextView mTextView = (TextView) findViewById(R.id.textList);
 
@@ -145,26 +151,7 @@ public class MensaMainActivity extends AppCompatActivity
         mTextView.append(" " + sdfHuman.format(menu_date));
         mTextView.setVisibility(TextView.VISIBLE);
 
-        Log.d(this.getClass().getName(), "TROVATO IL MENU: " + allMenu.size());
-
-        // non so come fare!!!
-        if (allMenu != null && allMenu.size() > 0)
-        {
-            Log.d(this.getClass().getName(), "ripreso il menu dal database");
-            String[] results = new String[allMenu.size()];
-
-            for (int i = 0; i < allMenu.size(); i++)
-                results[i] = allMenu.get(i).getDescrizione();
-
-            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, results);
-            mListView.setAdapter(adapter);
-
-        } else
-        {
-            Log.d(this.getClass().getName(), "chiamo il servlet.");
-            makeToast("nessun dato trovato sul database, li recupero dal server ...");
-            startIntent();
-        }
+        startIntent();
     }
 
     public void startIntent()
@@ -210,6 +197,8 @@ public class MensaMainActivity extends AppCompatActivity
                 }
                 List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = (List<mensa.info.application.org.infomensaapp.sql.model.Menu>) objallMenu;
 
+
+                // TODO da capire come fare per fare un adapter.
                 final ListView mListView = (ListView) findViewById(R.id.pastoList);
                 mTextView.setText(R.string.header_list);
                 mTextView.append(" " + sdfHuman.format(menu_date));
@@ -224,9 +213,6 @@ public class MensaMainActivity extends AppCompatActivity
                 final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, results);
                 mListView.setAdapter(adapter);
 
-                // aggiorno i dati sul dbase.
-                MenuDelGiornoManager manager = new MenuDelGiornoManager();
-                manager.setMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F", results);
 
                 break;
             case DownloadAbstractService.STATUS_ERROR:
@@ -263,8 +249,7 @@ public class MensaMainActivity extends AppCompatActivity
         if (this.drawer.isDrawerOpen(GravityCompat.START))
         {
             this.drawer.closeDrawer(GravityCompat.START);
-        }
-        else
+        } else
         {
             this.doubleBackToExitPressedOnce = true;
             makeToast("Premi ancora Esc per uscire...");
@@ -279,14 +264,13 @@ public class MensaMainActivity extends AppCompatActivity
         }
 
 
-
     }
 
     /**
      * metodi di servizio
      */
 
-    public void emailIntent()
+    public void startEmailIntent()
     {
         MailTo mt = MailTo.parse("mailto:giuseppe.ing.grosso@gmail.com");
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
