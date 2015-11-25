@@ -1,11 +1,11 @@
-package mensa.info.application.org.infomensaapp.service;
+package mensa.info.application.org.infomensaapp.service.interfaces;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 
 /**
- * Creato da giuseppegrosso in data 13/11/15.
+ * Creato da Giuseppe Grosso in data 13/11/15.
  */
 public class DownloadResultReceiver extends ResultReceiver
 {

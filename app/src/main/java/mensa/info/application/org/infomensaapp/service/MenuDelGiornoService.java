@@ -1,9 +1,5 @@
 package mensa.info.application.org.infomensaapp.service;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.ResultReceiver;
-import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -14,6 +10,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
+import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
+import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
 /**
  * Creato da Giuseppe Grosso in data 13/11/15.
@@ -28,58 +31,81 @@ public class MenuDelGiornoService extends DownloadAbstractService
         super(MenuDelGiornoService.class.getName());
     }
 
-
-    protected String convertInputStreamToString(InputStream inputStream) throws IOException
+    /**
+     * eseguo il parsing dei risultati e li restituisco nel bundle.
+     *
+     * @param result
+     * @return
+     */
+    protected Object parseResult(String result)
     {
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
+        List<Menu> menuList = new ArrayList<>();
 
-        while ((line = bufferedReader.readLine()) != null)
+        try
         {
-            result += line;
-        }
+            JSONObject response = new JSONObject(result);
 
-            /* Close Stream */
-        if (null != inputStream)
+            JSONArray dieta = response.optJSONArray("menu");
+
+            for (int i = 0; i < dieta.length() - 1; i++)
+            {
+                JSONObject sdieta = dieta.optJSONObject(i);
+
+                menuList.add(new Menu(sdieta.getString("codice_fiscale"), sdieta.getString("descrizione")));
+
+            }
+
+
+        } catch (JSONException e)
         {
-            inputStream.close();
+            e.printStackTrace();
         }
-
-        return result;
+        return menuList;
     }
 
-    protected String[] parseResult(String result)
+    @Override
+    protected Object retriveDataFromDbase(String url)
     {
+        // prendo i dati del menu del giorno.
+        MenuDelGiornoManager manager = new MenuDelGiornoManager();
+        List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F");
 
-        String[] blogTitles = null;
+        // non so come fare!!!
+        if (allMenu != null && allMenu.size() > 0)
+        {
+            return allMenu;
+        }
 
-        blogTitles = new String[4];
+        // se non ho trovato i dati di menu personali prendo la dieta normale.
+        allMenu = manager.getMenuDelGiornoStandard(this.getApplicationContext(), Calendar.getInstance());
+        if (allMenu != null && allMenu.size() > 0)
+        {
+            return allMenu;
+        }
 
-        blogTitles[0] = "Pasta al ragu di manzo";
-        blogTitles[1] = "Stracchino";
-        blogTitles[2] = "Insalata mista";
-        blogTitles[3] = "budino";
+        return null;
+    }
 
-//        try
-//        {
-//            JSONObject response = new JSONObject(result);
-//            JSONArray posts = response.optJSONArray("posts");
-//            blogTitles = new String[posts.length()];
-//
-//            for (int i = 0; i < posts.length(); i++)
-//            {
-//                JSONObject post = posts.optJSONObject(i);
-//                String title = post.optString("title");
-//                blogTitles[i] = title;
-//            }
+    /**
+     * metodo per lo store dei dati.
+     *
+     * @param data
+     * @return
+     */
+    @Override
+    protected void storeData(Object data)
+    {
+        List<Menu> lmenu = (List<Menu>) data;
+        Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + lmenu.size());
 
-
-//        } catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//        }
-        return blogTitles;
+        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+        Menu mn = null;
+        for (int i = 0; i < lmenu.size(); i++)
+        {
+            mn = lmenu.get(i);
+            Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + mn.getDescrizione() + " " + mn.getData());
+            db.createMenu(mn);
+        }
     }
 }
