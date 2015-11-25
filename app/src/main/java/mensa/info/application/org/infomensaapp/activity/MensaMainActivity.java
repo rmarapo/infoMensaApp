@@ -50,6 +50,7 @@ public class MensaMainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_mensa_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,11 +122,14 @@ public class MensaMainActivity extends AppCompatActivity
 
         if (id == R.id.nav_menugiorno)
         {
-            startMenuManager();
+//            startMenuManager();/**/
+            startActivity(new Intent(this, MenudelgiornoActivity.class));
+        } else if (id == R.id.nav_login)
+        {
+            startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.nav_presenze)
         {
-//            startActivity(new Intent(this, PresenzeActivity.class));
-            startActivity(new Intent(this, LoginActivity.class));
+            startActivity(new Intent(this, CalendarViewActivity.class));
         } else if (id == R.id.nav_conto)
         {
 //            startActivity(new Intent(this, ContoActivity.class));

@@ -64,7 +64,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
             try
             {
                 // cerco i dati nel database
-                results = retriveDataFromDbase(url);
+                results = retriveDataFromDbase(intent);
                 // se non li trovo li chiedo al server
                 if (results == null) results = downloadData(url);
 
@@ -182,7 +182,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
     protected abstract Object parseResult(String response);
 
 
-    protected abstract Object retriveDataFromDbase(String url);
+    protected abstract Object retriveDataFromDbase(Intent intent);
 
     // metodo per lo store dei dati.
     protected abstract void storeData(Object data);

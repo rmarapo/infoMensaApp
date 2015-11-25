@@ -67,13 +67,57 @@ public class DatabaseHelper extends SQLiteOpenHelper
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public void caricaPasti_Dati2015_2016(SQLiteDatabase db)
+    {
+        // SETTEMBRE
+        createMenu(db, "2015-09-21", new String[]{"PASTA AL POMODORO BIO", "FRITTATA BIO", "PISELLINI ALL'OLIO BIO", "FRUTTA FRESCA BIO"});
+        createMenu(db, "2015-09-22", new String[]{"PASSATO DI VERDURE CON PASTA", "PASTA PROSCIUTTO COTTO", "INSALATA VERDE CON MAIS", "BANANA"});
+        createMenu(db, "2015-09-23", new String[]{"TORTELLINI ROSE'", "PETTO DI POLLO AL LATTE", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2015-09-24", new String[]{"RISO ALL'OLIO", "POLPETTE DI MANZO AL POMODORO", "PATATE LESSE", "FRUTTA FRESCA"});
+        createMenu(db, "2015-09-25", new String[]{"PASTA AL PESTO", "PARMIGIANO REGGIANO", "INSALATA DI POMODORI", "SUCCO DI FRUTTA"});
+
+        createMenu(db, "2015-09-28", new String[]{"PASTA AL BURRO", "TONNO SOTT'OLIO / HALIBUT GRATINATO", "POMODORI INSALATATRI", "FRUTTA FRESCA"});
+        createMenu(db, "2015-09-29", new String[]{"RISO AL POMODORO", "RICOTTA FILIERA CORTA", "INSALATA MISTA", "FRUTTA FRESCA"});
+        createMenu(db, "2015-09-30", new String[]{"FUSILLI CON ZUCCHINE E PINOLI", "COSCE DI POLLO ARROSTO", "CAROTE FILANGE'", "BANANA"});
+        // OTTOBRE
+
+        // NOVEMBRE
+        createMenu(db, "2015-11-23", new String[]{"PASSATO DI VERDURA CON RISO", "MERLUZZO AROMATIZZATO CON MAIONESE", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2015-11-24", new String[]{"LASAGNE AL RAGU'", "PARMIGIANO REGGIANO", "INSALATA VERDE", "FRUTTA FRESCA"});
+        createMenu(db, "2015-11-25", new String[]{"PASTA AL TONNO", "PROSCIUTTO COTTO", "SPINACI SALTATI", "BANANA"});
+        createMenu(db, "2015-11-26", new String[]{"PASTA AL BURRO", "HAMBURGER DI MANZO CON POMODORO", "PATATE LESSE", "FRUTTA FRESCA"});
+        createMenu(db, "2015-11-27", new String[]{"CREMA DI PATATE E CAROTE CON RISO", "PETTO DI POLLO ALLA SALVIA", "PISELLI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2015-11-28", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-11-29", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-11-30", new String[]{"PASTA ALL'AMATRICIANA", "PECORINO DOP", "FAGIOLINI ALL'OLIO", "FRUTTA FRESCA"});
+
+        // DICEMBRE
+        createMenu(db, "2015-12-01", new String[]{"PASTINA IN BRODO/PASTA AL POMODORO**", "ROLLATA DI TACCHINO CON MORTADELLA", "BIETOLA SALTATA", "BANANA"});
+        createMenu(db, "2015-12-02", new String[]{"RISOTTO DI ZUCCA", "BOCCONCINI DI POLLO FRITTO", "INSALATA VERDE CON MAIS", "FRUTTA FRESCA"});
+        createMenu(db, "2015-12-03", new String[]{"TAGLIATELLE AL RAGU'", "POLPETTE VEGETALI", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2015-12-04", new String[]{"PASS. DI VERDURA CON ORZO'", "PROSCIUTTO CRUDO/PROSCIUTTO COTTO*", "PATATE ARROSTO", "TORTINA"});
+
+        createMenu(db, "2015-12-05", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-06", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-07", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-08", new String[]{"NON PREVISTO"});
+
+        createMenu(db, "2015-12-09", new String[]{"CAPPELLINI IN BRODO", "FRITTATA", "TRIS DI VERDURE AL VAPORE", "BANANA"});
+        createMenu(db, "2015-12-10", new String[]{"PASSATO DI VERDURA CON CROSTINI/RISO**", "COSCE DI POLLO ARROSTO", "FINOCCHI CRUDITE'", "FRUTTA FRESCA"});
+        createMenu(db, "2015-12-11", new String[]{"PASTA AL RAGU' DI MANZO", "STRACCHINO", "INSALATA MISTA", "BUDINO"});
+        createMenu(db, "2015-12-12", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-13", new String[]{"NON PREVISTO"});
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db)
     {
 
         // creazione delle tabelle
         db.execSQL(CREATE_TABLE_MENU);
+        caricaPasti_Dati2015_2016(db);
         db.execSQL(CREATE_TABLE_LOGIN);
+
         // inserisci le altre tabelle qui sotto...
     }
 
@@ -84,7 +128,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
         // inserisci le altre tabelle qui sotto...
-
         // creazione del database ...
         onCreate(db);
     }
@@ -95,13 +138,33 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     // ------------------------ "menu" metodi della tabella ----------------//
 
+    /*
+     * Creazione della tabella Menu
+     */
+    public long createMenu(SQLiteDatabase db, String data, String[] menu)
+    {
+        for (int i = 0; i < menu.length; i++)
+        {
+            createMenu(db, new Menu(data, Menu.PASTO_NORMALE, menu[i]));
+        }
+
+        return menu.length;
+    }
 
     /*
      * Creazione della tabella Menu
      */
     public long createMenu(Menu menu)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        return createMenu(null, menu);
+    }
+    /*
+     * Creazione della tabella Menu
+     */
+    public long createMenu(SQLiteDatabase db, Menu menu)
+    {
+        if (db == null)
+            db = this.getWritableDatabase();
 
         // insert row
         long menu_id = db.insert(TABLE_MENU, null, getContentFromMenu(menu));
@@ -291,8 +354,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN + " WHERE "
-                + KEY_ID + " = " + login_id;
+        String selectQuery = getLoginQuery(login_id, null, null);
 
         Log.e(LOG, selectQuery);
 
@@ -316,18 +378,39 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return mn;
     }
 
+    private String getLoginQuery(Long login_id, String cf, String ci)
+    {
+        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN + " l";
+        if (cf != null || ci != null || login_id != null)
+            selectQuery += " WHERE 1=1";
+        if (cf != null)
+            selectQuery += " AND l." + CF_LOGIN + " "
+                    + " = '" + cf + "'";
+        if (ci != null)
+            selectQuery += " AND l." + CI_LOGIN + " "
+                    + " = '" + ci + "'";
+        if (login_id != null)
+            selectQuery += " AND l." + KEY_ID + " "
+                    + " = " + login_id;
+
+        return selectQuery;
+    }
+
+    /**
+     * ottengo tutto l'oggetto login in base all'unica riga presente.
+     */
+    public List<Login> getLoginDefault()
+    {
+        return getLoginByCFCI(null, null);
+    }
+
     /**
      * ottengo tutto l'oggetto login
      */
     public List<Login> getLoginByCFCI(String cf, String ci)
     {
         List<Login> logins = new ArrayList<Login>();
-        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN + " l WHERE"
-                + " l." + CF_LOGIN + " "
-                + " = '" + cf + "'"
-                + " AND l." + CI_LOGIN + " "
-                + " = '" + ci + "'";
-
+        String selectQuery = getLoginQuery(null, cf, ci);
 
         Log.e(LOG, selectQuery);
 
@@ -354,6 +437,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         return getLoginCount() > 0;
     }
+
     /**
      * numero di login
      */
@@ -361,21 +445,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         return getLoginCountByCFCI(null, null);
     }
+
     /**
      * numero di login
      */
     public int getLoginCountByCFCI(String cf, String ci)
     {
-        String countQuery = "SELECT  * FROM " + TABLE_LOGIN + " l";
-        if (cf != null || ci != null)
-        {
-            countQuery += " WHERE";
-
-            if (cf != null)
-                countQuery += " l." + CF_LOGIN + " = '" + cf;
-            if (cf != null)
-                countQuery += " AND l." + CI_LOGIN + " = '" + ci;
-        }
+        String countQuery = getLoginQuery(null, cf, ci);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
@@ -385,6 +461,23 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         // return count
         return count;
+    }
+
+    /**
+     * Deleting a Login
+     */
+    public int updateLogin(Login login)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CF_LOGIN, login.getCf());
+        values.put(CI_LOGIN, login.getCi());
+        values.put(DATA_LOGIN, getDateTime());
+
+        // updating row
+        return db.update(TABLE_LOGIN, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(login.getId())});
     }
 
     /**

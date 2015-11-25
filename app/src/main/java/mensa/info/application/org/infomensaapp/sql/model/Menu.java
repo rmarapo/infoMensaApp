@@ -58,17 +58,30 @@ public class Menu implements Serializable
     {
         this(PASTO_NORMALE, descrizione);
     }
+
     public Menu(String cf, String descrizione)
     {
-        this(null, cf, descrizione);
+        this((Calendar) null, cf, descrizione);
     }
+
+    public Menu(Calendar data, String descrizione)
+    {
+        this(data, Menu.PASTO_NORMALE, descrizione);
+    }
+
     public Menu(Calendar data, String cf, String descrizione)
     {
-        this.data = MenuDelGiornoManager.getDateTime(data, "yyyy-MM-dd");
+        this(MenuDelGiornoManager.getDateTime(data, "yyyy-MM-dd"), cf, descrizione);
+    }
+
+    public Menu(String data, String cf, String descrizione)
+    {
+        this.data = data;
         this.cf = cf;
         this.descrizione = descrizione;
         this.consistente = 0;
     }
+
 
     public Integer getId()
     {

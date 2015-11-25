@@ -1,5 +1,6 @@
 package mensa.info.application.org.infomensaapp.service;
 
+import android.content.Intent;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -65,11 +66,14 @@ public class MenuDelGiornoService extends DownloadAbstractService
     }
 
     @Override
-    protected Object retriveDataFromDbase(String url)
+    protected Object retriveDataFromDbase(Intent intent)
     {
+        String data = intent.getStringExtra("data");
+        String cf = intent.getStringExtra("cf");
+
         // prendo i dati del menu del giorno.
         MenuDelGiornoManager manager = new MenuDelGiornoManager();
-        List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), Calendar.getInstance(), "GRSGPP76D12G999F");
+        List<mensa.info.application.org.infomensaapp.sql.model.Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), data, cf);
 
         // non so come fare!!!
         if (allMenu != null && allMenu.size() > 0)
@@ -78,7 +82,7 @@ public class MenuDelGiornoService extends DownloadAbstractService
         }
 
         // se non ho trovato i dati di menu personali prendo la dieta normale.
-        allMenu = manager.getMenuDelGiornoStandard(this.getApplicationContext(), Calendar.getInstance());
+        allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), data, Menu.PASTO_NORMALE);
         if (allMenu != null && allMenu.size() > 0)
         {
             return allMenu;
