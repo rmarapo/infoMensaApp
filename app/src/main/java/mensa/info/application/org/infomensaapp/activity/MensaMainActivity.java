@@ -1,17 +1,27 @@
 package mensa.info.application.org.infomensaapp.activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.net.MailTo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,6 +87,7 @@ public class MensaMainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private boolean isLoginActivated()
@@ -132,6 +143,7 @@ public class MensaMainActivity extends AppCompatActivity
             startActivity(new Intent(this, CalendarViewActivity.class));
         } else if (id == R.id.nav_conto)
         {
+            startNotifiche();
 //            startActivity(new Intent(this, ContoActivity.class));
         } else if (id == R.id.nav_settings)
         {
@@ -273,6 +285,38 @@ public class MensaMainActivity extends AppCompatActivity
     /**
      * metodi di servizio
      */
+
+
+    // notifiche
+    public void startNotifiche()
+    {
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        Intent notificationIntent = new Intent(MensaMainActivity.this, DownloadResultReceiver.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(MensaMainActivity.this, 0, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        NotificationManager nm = (NotificationManager) this
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Resources res = this.getResources();
+        Notification.Builder builder = new Notification.Builder(this);
+
+        builder.setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.typeb_calendar_today)
+                .setLargeIcon(BitmapFactory.decodeResource(res,R.drawable.typeb_calendar_today))
+                .setTicker(res.getString(R.string.app_name))
+                .setWhen(System.currentTimeMillis())
+                        .setAutoCancel(true)
+                        .setSound(soundUri)
+                .setContentTitle("Aggiornamento xxxx")
+                .setContentText("ci sono nuovi aggiornamenti per te!");
+
+        Notification n = builder.build();
+
+        nm.notify(11223, n);
+
+    }
 
     public void startEmailIntent()
     {
