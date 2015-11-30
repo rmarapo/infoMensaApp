@@ -1,7 +1,6 @@
 package mensa.info.application.org.infomensaapp.sql.model;
 
 
-import java.io.Serializable;
 import java.util.Calendar;
 
 import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
@@ -9,16 +8,14 @@ import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
 /**
  * Creato da Giuseppe Grosso in data 16/11/15.
  */
-public class Menu implements Serializable
+public class Menu extends ModelBean
 {
     public static final String PASTO_NORMALE = "PASTO_NORMALE";
 
-    private int id;
     private String data;
     private String cf;
     private String descrizione;
     private int consistente;
-    private String createdat;
 
     public Menu()
     {
@@ -83,16 +80,6 @@ public class Menu implements Serializable
     }
 
 
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
     public String getData()
     {
         return data;
@@ -132,16 +119,5 @@ public class Menu implements Serializable
     {
         this.consistente = consistente;
     }
-
-    public String getCreatedat()
-    {
-        return createdat;
-    }
-
-    public void setCreatedat(String createdat)
-    {
-        this.createdat = createdat;
-    }
-
 
 }

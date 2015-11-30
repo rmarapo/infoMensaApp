@@ -7,14 +7,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
 import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
+import mensa.info.application.org.infomensaapp.sql.model.Presenza;
 
 /**
  * Creato da Giuseppe Grosso in data 26/11/15.
@@ -24,10 +31,12 @@ public class PresenzeMensiliService extends DownloadAbstractService
 
     private static final String TAG = "PresenzeMensiliService";
 
+
     public PresenzeMensiliService()
     {
         super(PresenzeMensiliService.class.getName());
     }
+
 
     /**
      * eseguo il parsing dei risultati e li restituisco nel bundle.
@@ -38,25 +47,44 @@ public class PresenzeMensiliService extends DownloadAbstractService
     protected Object parseResult(String result)
     {
 
-        List<Calendar> dayList = new ArrayList<>();
-
+        List<Presenza> dayList = new ArrayList<>();
+        Presenza pp = null;
+        Calendar cal = Calendar.getInstance();
         try
         {
             JSONObject response = new JSONObject(result);
 
             JSONArray presenze = response.optJSONArray("presenze");
             Calendar day = null;
-            for (int i = 0; i < presenze.length() - 1; i++)
+            String spresenza = "";
+            String cf = "";
+            for (int i = 0; i < presenze.length(); i++)
             {
-                JSONObject spresenza = presenze.optJSONObject(i);
+                JSONObject jpresenza = presenze.optJSONObject(i);
+                if (jpresenza == null) continue;
 
-                day = new GregorianCalendar(2015, 10, i);
-
-                dayList.add(day);
-
-                Log.w("prova", "trovata presenza " + spresenza.get("presenze"));
+                // prendo la data che mi e' stata passata.
+                cal.setTimeInMillis(Long.parseLong(jpresenza.get("data").toString()));
+                spresenza = jpresenza.get("presenza").toString();
+                cf = jpresenza.get("codice_fiscale").toString();
+                if (jpresenza != null) break;
             }
+            // in base alle presenze array --> costruisco l'oggetto presenze.
+            for (int k = 0; k < spresenza.length(); k++)
+            {
+                if (spresenza.substring(k, k + 1).equalsIgnoreCase("1"))
+                {
 
+                    day = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), k + 1);
+                    pp = new Presenza(day, cf);
+                    dayList.add(pp);
+
+                    // per la scrittura sul dbase scrivo i record presenze.
+                    Log.w(TAG, "dayList Size: " + new SimpleDateFormat("yyyyMMdd").format(day.getTime()));
+
+                }
+
+            }
 
         } catch (JSONException e)
         {
@@ -68,25 +96,20 @@ public class PresenzeMensiliService extends DownloadAbstractService
     @Override
     protected Object retriveDataFromDbase(Intent intent)
     {
-        String data = intent.getStringExtra("data");
+        Long data = intent.getLongExtra("data", 0);
         String cf = intent.getStringExtra("cf");
-
-//        // prendo i dati del menu del giorno.
-//        MenuDelGiornoManager manager = new MenuDelGiornoManager();
-//        List<Menu> allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), data, cf);
+        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+        // prendo i dati e li memorizzo
+        Calendar presenzaMensile = Calendar.getInstance();
+        presenzaMensile.setTimeInMillis(data);
+        List<Presenza> allPresenze = db.getPresenzeMensiliByDataCf(presenzaMensile, cf);
 //
-//        // non so come fare!!!
-//        if (allMenu != null && allMenu.size() > 0)
-//        {
-//            return allMenu;
-//        }
-//
-//        // se non ho trovato i dati di menu personali prendo la dieta normale.
-//        allMenu = manager.getMenuDelGiorno(this.getApplicationContext(), data, Menu.PASTO_NORMALE);
-//        if (allMenu != null && allMenu.size() > 0)
-//        {
-//            return allMenu;
-//        }
+        Log.w(this.getClass().getName(), "trovate nro presenze; " + allPresenze.size());
+        // se ci sono presenze le ritorno.
+        if (allPresenze != null && allPresenze.size() > 0)
+        {
+            return allPresenze;
+        }
 
         return null;
     }
@@ -100,16 +123,16 @@ public class PresenzeMensiliService extends DownloadAbstractService
     @Override
     protected void storeData(Object data)
     {
-//        List<Menu> lmenu = (List<Menu>) data;
-//        Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + lmenu.size());
-//
-//        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
-//        Menu mn = null;
-//        for (int i = 0; i < lmenu.size(); i++)
-//        {
-//            mn = lmenu.get(i);
-//            Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + mn.getDescrizione() + " " + mn.getData());
-//            db.createMenu(mn);
-//        }
+        List<Presenza> lpresenza = (List<Presenza>) data;
+        Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + lpresenza.size());
+
+        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+        Presenza pp = null;
+        for (int i = 0; i < lpresenza.size(); i++)
+        {
+            pp = lpresenza.get(i);
+            Log.w(this.getClass().getName(), "SCRIVO La presenza su database: " + pp.getDataAsString() + " " + pp.getCf());
+            db.createPresenze(pp);
+        }
     }
 }

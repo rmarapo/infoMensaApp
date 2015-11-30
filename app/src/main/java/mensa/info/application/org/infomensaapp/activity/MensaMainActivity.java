@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +33,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -144,6 +150,7 @@ public class MensaMainActivity extends AppCompatActivity
 //            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_email)
         {
+            copyDatabase();
             startEmailIntent();
         }
 
@@ -152,6 +159,40 @@ public class MensaMainActivity extends AppCompatActivity
         return true;
     }
 
+
+    public void copyDatabase()
+    {
+        try
+        {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite())
+            {
+                String currentDBPath = "data/mensa.info.application.org.infomensaapp/databases/mensaApp";
+
+                String backupDBPath = "Download/copiaMensaApp";
+                File currentDB = new File(data, currentDBPath);
+                File backupDB = new File(sd, backupDBPath);
+
+                if (currentDB.exists())
+                {
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                }
+                makeToast("Backup Complete");
+            }
+        } catch (Exception e)
+        {
+            Log.w("Settings Backup", e);
+        } finally
+        {
+            Log.w("Fine copia", "fine copia ");
+        }
+    }
 
 
     boolean doubleBackToExitPressedOnce = false;
@@ -207,11 +248,11 @@ public class MensaMainActivity extends AppCompatActivity
 
         builder.setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.typeb_calendar_today)
-                .setLargeIcon(BitmapFactory.decodeResource(res,R.drawable.typeb_calendar_today))
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.typeb_calendar_today))
                 .setTicker(res.getString(R.string.app_name))
                 .setWhen(System.currentTimeMillis())
-                        .setAutoCancel(true)
-                        .setSound(soundUri)
+                .setAutoCancel(true)
+                .setSound(soundUri)
                 .setContentTitle("Aggiornamento xxxx")
                 .setContentText("ci sono nuovi aggiornamenti per te!");
 

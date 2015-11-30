@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import mensa.info.application.org.infomensaapp.sql.model.Login;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
+import mensa.info.application.org.infomensaapp.sql.model.Presenza;
 
 /**
  * Creato da Giuseppe Grosso in data 16/11/15.
@@ -34,6 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     // Table Names
     private static final String TABLE_MENU = "menu";
     private static final String TABLE_LOGIN = "login";
+    private static final String TABLE_PRESENZE = "presenze";
+
 
     // Common column names
     private static final String KEY_ID = "id";
@@ -45,9 +48,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String DESC_MENU = "desc";
     private static final String CONSISTENTE_MENU = "consistente";
 
+    // campi della tabella login
     private static final String DATA_LOGIN = "data";
     private static final String CF_LOGIN = "cf";
     private static final String CI_LOGIN = "ci";
+
+    // campi della tabella presenze
+    private static final String DATA_PRESENZE = "data";
+    private static final String CF_PRESENZE = "cf";
+    private static final String PRESENZA_PRESENZE = "presenza";
 
 
     // Creazione tabella
@@ -60,6 +69,11 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE "
             + TABLE_LOGIN + "(" + KEY_ID + " INTEGER PRIMARY KEY," + DATA_LOGIN
             + " DATE," + CF_LOGIN + " TEXT," + CI_LOGIN + " TEXT," + KEY_CREATED_AT
+            + " DATETIME" + ")";
+
+    private static final String CREATE_TABLE_PRESENZE = "CREATE TABLE "
+            + TABLE_PRESENZE + "(" + KEY_ID + " INTEGER PRIMARY KEY," + DATA_PRESENZE
+            + " DATE," + CF_PRESENZE + " TEXT," + PRESENZA_PRESENZE + " INTEGER," + KEY_CREATED_AT
             + " DATETIME" + ")";
 
     public DatabaseHelper(Context context)
@@ -75,7 +89,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         createMenu(db, "2015-09-23", new String[]{"TORTELLINI ROSE'", "PETTO DI POLLO AL LATTE", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
         createMenu(db, "2015-09-24", new String[]{"RISO ALL'OLIO", "POLPETTE DI MANZO AL POMODORO", "PATATE LESSE", "FRUTTA FRESCA"});
         createMenu(db, "2015-09-25", new String[]{"PASTA AL PESTO", "PARMIGIANO REGGIANO", "INSALATA DI POMODORI", "SUCCO DI FRUTTA"});
-
+        createMenu(db, "2015-09-26", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-09-27", new String[]{"NON PREVISTO"});
         createMenu(db, "2015-09-28", new String[]{"PASTA AL BURRO", "TONNO SOTT'OLIO / HALIBUT GRATINATO", "POMODORI INSALATATRI", "FRUTTA FRESCA"});
         createMenu(db, "2015-09-29", new String[]{"RISO AL POMODORO", "RICOTTA FILIERA CORTA", "INSALATA MISTA", "FRUTTA FRESCA"});
         createMenu(db, "2015-09-30", new String[]{"FUSILLI CON ZUCCHINE E PINOLI", "COSCE DI POLLO ARROSTO", "CAROTE FILANGE'", "BANANA"});
@@ -96,17 +111,47 @@ public class DatabaseHelper extends SQLiteOpenHelper
         createMenu(db, "2015-12-02", new String[]{"RISOTTO DI ZUCCA", "BOCCONCINI DI POLLO FRITTO", "INSALATA VERDE CON MAIS", "FRUTTA FRESCA"});
         createMenu(db, "2015-12-03", new String[]{"TAGLIATELLE AL RAGU'", "POLPETTE VEGETALI", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
         createMenu(db, "2015-12-04", new String[]{"PASS. DI VERDURA CON ORZO'", "PROSCIUTTO CRUDO/PROSCIUTTO COTTO*", "PATATE ARROSTO", "TORTINA"});
-
         createMenu(db, "2015-12-05", new String[]{"NON PREVISTO"});
         createMenu(db, "2015-12-06", new String[]{"NON PREVISTO"});
         createMenu(db, "2015-12-07", new String[]{"NON PREVISTO"});
         createMenu(db, "2015-12-08", new String[]{"NON PREVISTO"});
-
         createMenu(db, "2015-12-09", new String[]{"CAPPELLINI IN BRODO", "FRITTATA", "TRIS DI VERDURE AL VAPORE", "BANANA"});
         createMenu(db, "2015-12-10", new String[]{"PASSATO DI VERDURA CON CROSTINI/RISO**", "COSCE DI POLLO ARROSTO", "FINOCCHI CRUDITE'", "FRUTTA FRESCA"});
         createMenu(db, "2015-12-11", new String[]{"PASTA AL RAGU' DI MANZO", "STRACCHINO", "INSALATA MISTA", "BUDINO"});
         createMenu(db, "2015-12-12", new String[]{"NON PREVISTO"});
         createMenu(db, "2015-12-13", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-14", new String[]{"PASTA AL POMODORO", "CROCCHETTE DI MERLUZZO AL FORNO", "PISELLINI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2015-12-15", new String[]{"RISOTTO AI PORRI", "ARISTA ARROSTO", "PURE' DI PATATE", "FRUTTA FRESCA"});
+        createMenu(db, "2015-12-16", new String[]{"RAVIOLI BURRO E SALVIA", "SCALOPPE DI POLLO ALL'ARANCIA", "PATATINE PAI", "PANETTONE"});
+        createMenu(db, "2015-12-17", new String[]{"PASS. DI CECI E PASTA BIO", "BOCCONCINI DI MOZZARELLA BIO", "BIETOLA SALTATA BIO", "BANANA BIO"});
+        createMenu(db, "2015-12-18", new String[]{"PASTA AL POMODORO E RICOTTA", "POLPETTONE DI SHREK", "TRIS DI VERDURE AL VAPORE", "SUCCO DI FRUTTA"});
+        createMenu(db, "2015-12-19", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-20", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-21", new String[]{"PASSATO DI VERDURA CON RISO", "MERLUZZO AROMATIZZATO CON MAIONESE", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2015-12-22", new String[]{"PASTA AL POMODORO", "PARMIGIANO REGGIANO", "FAGIOLINI ALL'OLIO", "SUCCO DI FRUTTA"});
+        createMenu(db, "2015-12-23", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-24", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-25", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-26", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-27", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-28", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-29", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-30", new String[]{"NON PREVISTO"});
+        createMenu(db, "2015-12-31", new String[]{"NON PREVISTO"});
+
+        // GENNAIO 2016!!!!
+        createMenu(db, "2016-01-01", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-02", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-03", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-04", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-05", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-06", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-07", new String[]{"PASTA AL BURRO", "MANZO ARROSTO", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-08", new String[]{"CREMA PATATE E CAROTE CON RISO", "PETTO DI POLLO ALLA SALVIA", "PISELLINI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-09", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-10", new String[]{"NON PREVISTO"});
+
+
     }
 
     @Override
@@ -117,6 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(CREATE_TABLE_MENU);
         caricaPasti_Dati2015_2016(db);
         db.execSQL(CREATE_TABLE_LOGIN);
+        db.execSQL(CREATE_TABLE_PRESENZE);
 
         // inserisci le altre tabelle qui sotto...
     }
@@ -127,6 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRESENZE);
         // inserisci le altre tabelle qui sotto...
         // creazione del database ...
         onCreate(db);
@@ -158,6 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         return createMenu(null, menu);
     }
+
     /*
      * Creazione della tabella Menu
      */
@@ -296,7 +344,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Updating a todo
+     * Aggiorno i menu
      */
     public int updateMenu(Menu menu)
     {
@@ -308,7 +356,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Deleting a Menu
+     * Cancello un menu dato l'id
      */
     public void deleteMenu(long menu_id)
     {
@@ -412,8 +460,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         List<Login> logins = new ArrayList<Login>();
         String selectQuery = getLoginQuery(null, cf, ci);
 
-        Log.e(LOG, selectQuery);
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -490,6 +536,164 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 new String[]{String.valueOf(login_id)});
     }
 
+
+    // ------------------------ "presenze" metodi della tabella ----------------//
+
+    /*
+     * Creazione della tabella Menu
+     */
+    public long createPresenze(Presenza pp)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert row
+        long presenze_id = 0;
+        presenze_id = db.insert(TABLE_PRESENZE, null, getContentFromPresenze(pp.getData(), pp.getCf(), 1));
+        return presenze_id;
+
+    }
+
+    /*
+     * Creazione della tabella Menu
+     */
+    public long createPresenze(Calendar data, String cf, int[] presenze)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert row
+        long presenze_id = 0;
+        for (int i = 0; i > presenze.length; i++)
+        {
+            presenze_id = db.insert(TABLE_PRESENZE, null, getContentFromPresenze(data, cf, presenze[i]));
+        }
+        return presenze_id;
+    }
+
+    private ContentValues getContentFromPresenze(Calendar data, String cf, int presenza)
+    {
+        return getContentFromPresenze(getDate(data), cf, presenza);
+    }
+
+    private ContentValues getContentFromPresenze(String data, String cf, int presenza)
+    {
+        ContentValues values = new ContentValues();
+        values.put(DATA_PRESENZE, data);
+        values.put(CF_PRESENZE, cf);
+        values.put(PRESENZA_PRESENZE, presenza);
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        return values;
+    }
+
+    /**
+     * ottengo l'elemento di Login
+     */
+    public Presenza getPresenza(long presenza_id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = getPresenzaQuery(presenza_id, null, null);
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        return getPresenzaFromCursor(c);
+    }
+
+    /**
+     * ottengo l'elemento di Login
+     */
+    public Presenza getPresenzeByDataCf(Calendar date, String cf)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = getPresenzaQuery(null, date, cf);
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        return getPresenzaFromCursor(c);
+    }
+
+    /**
+     * ottengo l'elemento di Login
+     */
+    public List<Presenza> getPresenzeMensiliByDataCf(Calendar date, String cf)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = getPresenzaQuery(null, date, cf, true);
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        List<Presenza> lpresenza = new ArrayList<>();
+        // looping through all rows and adding to list
+        if (c.moveToFirst())
+        {
+            do
+            {
+                // aggiungo il menu alla lista.
+                lpresenza.add(getPresenzaFromCursor(c));
+            } while (c.moveToNext());
+        }
+        return lpresenza;
+    }
+
+
+    private Presenza getPresenzaFromCursor(Cursor c)
+    {
+        Presenza p = new Presenza();
+        p.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        p.setData(getCalendar(c.getLong(c.getColumnIndex(DATA_PRESENZE))));
+        p.setCf((c.getString(c.getColumnIndex(CF_PRESENZE))));
+        p.setPresenza((c.getInt(c.getColumnIndex(PRESENZA_PRESENZE))));
+        p.setCreatedat(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
+
+        return p;
+    }
+
+    private String getPresenzaQuery(Long presenza_id, Calendar data, String cf)
+    {
+        return getPresenzaQuery(presenza_id, data, cf, false);
+    }
+
+    private String getPresenzaQuery(Long presenza_id, Calendar data, String cf, boolean mensili)
+    {
+        String selectQuery = "SELECT  * FROM " + TABLE_PRESENZE + " l";
+        if (data != null || cf != null || presenza_id != null)
+            selectQuery += " WHERE 1=1";
+        if (mensili)
+        {
+            if (data != null)
+                selectQuery += " AND strftime('%m', l." + DATA_PRESENZE + " "
+                        + ") = '" + data.get(Calendar.MONTH) + "'";
+        } else
+        {
+            if (data != null)
+                selectQuery += " AND l." + DATA_PRESENZE + " "
+                        + " = '" + data + "'";
+        }
+        if (cf != null)
+            selectQuery += " AND l." + CF_PRESENZE + " "
+                    + " = '" + cf + "'";
+        if (presenza_id != null)
+            selectQuery += " AND l." + KEY_ID + " "
+                    + " = " + presenza_id;
+
+        return selectQuery;
+    }
+
+
     /************************************************************************************************
      * Metodi di comodo.
      ************************************************************************************************/
@@ -497,6 +701,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private String getDate()
     {
         return getDate(null);
+    }
+
+    private Calendar getCalendar(Long cal)
+    {
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTimeInMillis(cal);
+        return calendario;
     }
 
     private String getDate(Calendar date)

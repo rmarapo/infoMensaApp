@@ -108,7 +108,7 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
         intent.putExtra("data", sdfDbase.format(menu_date.getTime()));
         intent.putExtra("cf", cf);
         intent.putExtra("receiver", mReceiver);
-        intent.putExtra("requestId", 101);
+        intent.putExtra("requestId", 102);
         intent.putExtra("url", URL_SERVER + "mensa?step=getMenuGiorno&data=" + sdf.format(menu_date.getTime()) + "&cf=" + intent.getStringExtra("cf"));
 
         startService(intent);

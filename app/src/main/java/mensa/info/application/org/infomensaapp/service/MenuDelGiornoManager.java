@@ -42,6 +42,7 @@ public class MenuDelGiornoManager
         List<Menu> allMenus = db.getPastoPersonaleByDate(sData, cf);
         return allMenus;
     }
+
     public List<Menu> getMenuDelGiorno(Context context, String data, String cf)
     {
         Log.d(LOG, "Prendo il menu dal database");

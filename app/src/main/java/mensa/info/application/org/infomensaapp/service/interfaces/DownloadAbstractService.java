@@ -45,7 +45,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        Log.d(TAG, "Service Started!");
+        Log.w(TAG, "Service Started!");
 
         // prendo la classe di receiver
         final ResultReceiver receiver = intent.getParcelableExtra("receiver");

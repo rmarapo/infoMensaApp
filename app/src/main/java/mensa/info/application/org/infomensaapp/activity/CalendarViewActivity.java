@@ -1,61 +1,44 @@
 package mensa.info.application.org.infomensaapp.activity;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.decorators.EventDecorator;
-import com.prolificinteractive.materialcalendarview.decorators.TextDecorator;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Executors;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 import mensa.info.application.org.infomensaapp.R;
-import mensa.info.application.org.infomensaapp.service.MenuDelGiornoService;
 import mensa.info.application.org.infomensaapp.service.PresenzeMensiliService;
 import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
 import mensa.info.application.org.infomensaapp.service.interfaces.DownloadResultReceiver;
 import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Login;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
+import mensa.info.application.org.infomensaapp.sql.model.Presenza;
 
 public class CalendarViewActivity extends AppCompatActivity implements DownloadResultReceiver.Receiver
 {
 
-    private static final String URL_SERVER = "http://10.2.2.10:8080/help/"; //Giuseppe.
+    private static final String URL_SERVER = "http://10.2.2.10:8080/mensa/"; //Giuseppe.
 
     private Date menu_date = Calendar.getInstance().getTime();
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -78,6 +61,8 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // se ci sono prendo i dati dalla banca dati
         this.db = new DatabaseHelper(this.getApplicationContext());
@@ -98,61 +83,27 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
         widget.setWeekDayTextAppearance(R.style.TextAppearance_AppCompat_Medium);
         widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
+        widget.clearSelection();
         // richiamo il server per il recupero delle presenze.
-//        new PresenzeMensa().executeOnExecutor(Executors.newSingleThreadExecutor());
 
-        startIntent(this.getApplicationContext());
+        startIntent(Calendar.getInstance());
+
+        widget.setOnMonthChangedListener(new OnMonthChangedListener()
+        {
+            @Override
+            public void onMonthChanged(MaterialCalendarView widget, CalendarDay date)
+            {
+                startIntent(date.getCalendar());
+            }
+        });
 
     }
 
 
-    /**
-     * chiamata al server per il recupero delle presenze.
-     */
-    private class PresenzeMensa extends AsyncTask<Void, Void, List<Calendar>>
+    public void startIntent(Calendar date)
     {
+        widget.clearSelection();
 
-        @Override
-        protected List<Calendar> doInBackground(@NonNull Void... voids)
-        {
-            try
-            {
-                Thread.sleep(2000);
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-            Calendar calendar = null;
-            List<Calendar> dates = new ArrayList<>();
-
-            for (int i = 0; i < 30; i++)
-            {
-                calendar = new GregorianCalendar(2015, 10, i);
-                dates.add(calendar);
-            }
-
-            return dates;
-        }
-
-        @Override
-        protected void onPostExecute(@NonNull List<Calendar> calendarDays)
-        {
-            super.onPostExecute(calendarDays);
-
-            if (isFinishing())
-            {
-                return;
-            }
-
-            for (int i = 0; i < calendarDays.size(); i++)
-            {
-                widget.setDateSelected(calendarDays.get(i), true);
-            }
-        }
-    }
-
-    public void startIntent(Context context)
-    {
         // recupero il codice fiscale dalla login.
         String cf = Menu.PASTO_NORMALE;
         List<Login> lLogin = db.getLoginDefault();
@@ -161,12 +112,14 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
         /* Starting Download Service */
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PresenzeMensiliService.class);
         /* Send optional extras to Download IntentService */
-        intent.putExtra("data", sdfDbase.format(Calendar.getInstance().getTime()));
+        intent.putExtra("data", date.getTimeInMillis());
         intent.putExtra("cf", cf);
         intent.putExtra("receiver", mReceiver);
-        intent.putExtra("requestId", 101);
-        intent.putExtra("url", URL_SERVER + "mensa?step=getPresenzeMensili&data=" + sdf.format(Calendar.getInstance().getTime()) + "&cf=" + intent.getStringExtra("cf"));
+        intent.putExtra("requestId", 112);
+        String url = URL_SERVER + "mensa?step=getPresenzeMensili&bean__data=" + date.getTimeInMillis() + "&bean__cf=" + intent.getStringExtra("cf");
+        intent.putExtra("url", url);
 
+        Log.w(this.getClass().getName(), "start del service " + url);
         startService(intent);
     }
 
@@ -185,16 +138,24 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
                 setProgressBarIndeterminateVisibility(false);
 
                 Calendar calendar = null;
-                List<Calendar> dates = new ArrayList<>();
+                List<Presenza> dates = new ArrayList<>();
 
-                for (int i = 0; i < 30; i++)
+                Object objallPresenze = null;
+                try
                 {
-                    calendar = new GregorianCalendar(2015, 10, i);
-                    dates.add(calendar);
+                    objallPresenze = bytes2Object((byte[]) resultData.get("result"));
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e)
+                {
+                    e.printStackTrace();
                 }
+                dates = (List<Presenza>) objallPresenze;
+
                 for (int i = 0; i < dates.size(); i++)
                 {
-                    widget.setDateSelected(dates.get(i), true);
+                    widget.setDateSelected(dates.get(i).getData(), true);
                 }
 
                 break;
@@ -216,5 +177,16 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
         ObjectInputStream ois = new ObjectInputStream(bais);
         Object o = ois.readObject();
         return o;
+    }
+
+
+    public void makeToast(String text, boolean b)
+    {
+        Toast.makeText(getApplicationContext(), text, (b ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG)).show();
+    }
+
+    public void makeToast(String text)
+    {
+        makeToast(text, true);
     }
 }

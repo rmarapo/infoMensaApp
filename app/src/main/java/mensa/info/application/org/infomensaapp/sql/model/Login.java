@@ -5,13 +5,11 @@ import java.io.Serializable;
 /**
  * Creato da Giuseppe Grosso in data 18/11/15.
  */
-public class Login implements Serializable
+public class Login extends ModelBean
 {
-    private int id;
     private String data;
     private String cf;
     private String ci;
-    private String createdat;
 
     public Login()
     {
@@ -46,16 +44,6 @@ public class Login implements Serializable
         this(0, null, cf, ci);
     }
 
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
-
     public String getData()
     {
         return data;
@@ -84,16 +72,6 @@ public class Login implements Serializable
     public void setCi(String ci)
     {
         this.ci = ci;
-    }
-
-    public String getCreatedat()
-    {
-        return createdat;
-    }
-
-    public void setCreatedat(String createdat)
-    {
-        this.createdat = createdat;
     }
 
 }
