@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.MailTo;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -162,6 +164,7 @@ public class MensaMainActivity extends AppCompatActivity
 
     public void copyDatabase()
     {
+        makeToast("connessione: " + isConnectionActivate());
         try
         {
             File sd = Environment.getExternalStorageDirectory();
@@ -192,6 +195,22 @@ public class MensaMainActivity extends AppCompatActivity
         {
             Log.w("Fine copia", "fine copia ");
         }
+    }
+
+    private boolean isConnectionActivate()
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+
+        if (isWiFi)
+            makeToast("connessione wifi: " + isWiFi);
+
+        return isConnected;
     }
 
 

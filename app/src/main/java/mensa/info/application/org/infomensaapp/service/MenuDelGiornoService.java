@@ -98,7 +98,7 @@ public class MenuDelGiornoService extends DownloadAbstractService
      * @return
      */
     @Override
-    protected void storeData(Object data)
+    protected void storeData(Intent intent, Object data)
     {
         List<Menu> lmenu = (List<Menu>) data;
         Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + lmenu.size());

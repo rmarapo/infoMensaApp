@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -151,6 +153,47 @@ public class DatabaseHelper extends SQLiteOpenHelper
         createMenu(db, "2016-01-09", new String[]{"NON PREVISTO"});
         createMenu(db, "2016-01-10", new String[]{"NON PREVISTO"});
 
+        createMenu(db, "2016-01-11", new String[]{"PASTA ALL'AMATRICIANA", "PECORINO DOP", "FAGIOLINI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-12", new String[]{"PASTINA IN BRODO/PASTA AL POMODORO**", "ROLLATA DI TACCHINO CON MORTADELLA", "BIETOLA SALTATA", "BANANA"});
+        createMenu(db, "2016-01-13", new String[]{"RISOTTO DI ZUCCA", "BOCCONCINI DI POLLO FRITTO", "INSALATA VERDE CON MAIS", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-14", new String[]{"TAGLIATELLE AL RAGU'", "POLPETTE VEGETALI", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-15", new String[]{"PASS. DI VERDURA CON ORZO'", "PROSCIUTTO CRUDO/PROSCIUTTO COTTO*", "PATATE ARROSTO", "TORTINA"});
+        createMenu(db, "2016-01-16", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-17", new String[]{"NON PREVISTO"});
+
+        createMenu(db, "2016-01-18", new String[]{"RISO AL POMODORO", "TONNO SOTT'OLIO/MERLUZZO AL FORNO*", "CAROTE FILANGE'", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-19", new String[]{"PASTA ALL'OLIO", "MANZO ARROSTO AL POMODORO", "CROCCHETTE DI PATATE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-20", new String[]{"CAPPELLETTI IN BRODO", "FRITTATA", "TRIS DI VERDURE AL VAPORE", "BANANA"});
+        createMenu(db, "2016-01-21", new String[]{"PASSATO DI VERDURA CON CROSTINI/RISO", "COSCE DI POLLO ARROSTO", "FINOCCHI CRUDITE'", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-22", new String[]{"PASTA AL RAGU' DI MANZO", "STRACCHINO", "INSALATA MISTA", "BUDINO"});
+        createMenu(db, "2016-01-23", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-24", new String[]{"NON PREVISTO"});
+
+        createMenu(db, "2016-01-25", new String[]{"PASTA AL POMODORO", "PLATESSA FRITTA", "CAROTE ALL'OLIO", "BANANA"});
+        createMenu(db, "2016-01-26", new String[]{"PASTA AL BURRO", "PETTO DI POLLO ALLA MUGNAIA", "INSALATA VERDE CON MAIS", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-27", new String[]{"LASAGNE AL RAGU'", "PARMIGIANO REGGIANO", "SPINACI SALTATI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-28", new String[]{"RISOTTO AI CARCIOFI'", "TACCHINO AGLI AROMI", "PURE' DI PATATE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-01-29", new String[]{"PASS. DI FAGIOLI E PASTA", "POLPETTE VEGETALI", "FINOCCHI E CAROTE CRUDITE'", "SUCCO DI FRUTTA"});
+        createMenu(db, "2016-01-30", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-01-31", new String[]{"NON PREVISTO"});
+
+        // FEBBRAIO
+        createMenu(db, "2016-02-01", new String[]{"RAVIOLI AL POMODORO", "ARISTA ARROSTO", "INSALATA MISTA", "FRUTTA FRESCA"});
+        createMenu(db, "2016-02-02", new String[]{"PASSATO DI VERDURA CON RISO", "PIZZA", "FRUTTA FRESCA"});
+        createMenu(db, "2016-02-03", new String[]{"PASTINA IN BRODO/CAPPELLETTI IN BRODO**", "HAMBURGER POLLO E TACCHINO", "FINOCCHI CRUDITE'", "FRUTTA FRESCA"});
+        createMenu(db, "2016-02-04", new String[]{"PASTA AL RAGU' DI MANZO", "BOCCONCINI DI MOZZARELLA", "BIETOLA SALTATA", "CENCI"});
+        createMenu(db, "2016-02-05", new String[]{"PASTA ALL'OLIO", "TONNO SOTT'OLIO", "FAGIOLI ALL'OLIO", "TORTINA"});
+        createMenu(db, "2016-02-06", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-02-07", new String[]{"NON PREVISTO"});
+
+        createMenu(db, "2016-02-08", new String[]{"POLENTA AL RAGU'", "PROSCIUTTO COTTO", "FAGIOLINI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-02-09", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-02-10", new String[]{"PASS. DI CECI E PASTA BIO", "STRACCHINO BIO", "SPINACI SALTATI BIO'", "BANANA BIO"});
+        createMenu(db, "2016-02-11", new String[]{"RISOTTO ALLA PARMIGIANA", "BOCC. DI POLLO FRITTO", "CAROTE FILANGE'", "FRUTTA FRESCA"});
+        createMenu(db, "2016-02-12", new String[]{"TAGLIATELLE AL POMODORO", "MERLUZZO CON MAIONESE", "PATATE LESSE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-02-13", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-02-14", new String[]{"NON PREVISTO"});
+
 
     }
 
@@ -217,6 +260,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         // insert row
         long menu_id = db.insert(TABLE_MENU, null, getContentFromMenu(menu));
 
+        db.close();
+
         return menu_id;
     }
 
@@ -249,7 +294,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         if (c != null)
             c.moveToFirst();
 
-        return getMenuFromCursor(c);
+        Menu mn = getMenuFromCursor(c);
+
+        c.close();
+        db.close();
+
+        return mn;
     }
 
     private Menu getMenuFromCursor(Cursor c)
@@ -298,6 +348,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
             } while (c.moveToNext());
         }
 
+        c.close();
+        db.close();
+
         return menus;
     }
 
@@ -338,6 +391,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         int count = cursor.getCount();
         cursor.close();
+        db.close();
 
         // return count
         return count;
@@ -411,7 +465,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
         if (c != null)
             c.moveToFirst();
 
-        return getLoginFromCursor(c);
+        Login lg = getLoginFromCursor(c);
+
+        c.close();
+        db.close();
+
+        return lg;
     }
 
     private Login getLoginFromCursor(Cursor c)
@@ -473,6 +532,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
             } while (c.moveToNext());
         }
 
+        c.close();
+        db.close();
+
         return logins;
     }
 
@@ -504,7 +566,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         int count = cursor.getCount();
         cursor.close();
-
+        db.close();
         // return count
         return count;
     }
@@ -646,6 +708,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 lpresenza.add(getPresenzaFromCursor(c));
             } while (c.moveToNext());
         }
+
+        c.close();
+        db.close();
         return lpresenza;
     }
 
@@ -654,7 +719,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         Presenza p = new Presenza();
         p.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-        p.setData(getCalendar(c.getLong(c.getColumnIndex(DATA_PRESENZE))));
+        p.setData(getCalendar(c.getString(c.getColumnIndex(DATA_PRESENZE)), "yyyy-MM-dd"));
         p.setCf((c.getString(c.getColumnIndex(CF_PRESENZE))));
         p.setPresenza((c.getInt(c.getColumnIndex(PRESENZA_PRESENZE))));
         p.setCreatedat(c.getString(c.getColumnIndex(KEY_CREATED_AT)));
@@ -675,8 +740,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         if (mensili)
         {
             if (data != null)
-                selectQuery += " AND strftime('%m', l." + DATA_PRESENZE + " "
-                        + ") = '" + data.get(Calendar.MONTH) + "'";
+                selectQuery += " AND strftime('%Y%m', l." + DATA_PRESENZE + " "
+                        + ") = '" + getYearMonth(data) + "'";
         } else
         {
             if (data != null)
@@ -693,6 +758,36 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return selectQuery;
     }
 
+    /**
+     * cancello le presenze
+     */
+    public void deletePresenza(long presenza_id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_PRESENZE, KEY_ID + " = ?", new String[]{String.valueOf(presenza_id)});
+        db.close();
+    }
+
+    public void deletePresenzaByCfDate(String cf, Calendar data)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_PRESENZE, DATA_PRESENZE + " = ? AND " + CF_PRESENZE + " = ?", new String[]{getDate(data), cf});
+        db.close();
+    }
+
+    public void deletePresenzeMeseByCfDate(String cf, Long data)
+    {
+        Calendar mydate = Calendar.getInstance();
+        mydate.setTimeInMillis(data);
+        deletePresenzeMeseByCfDate(cf, mydate);
+    }
+
+    public void deletePresenzeMeseByCfDate(String cf, Calendar data)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_PRESENZE, "strftime('%Y%m', " + DATA_PRESENZE + ") = ? AND " + CF_PRESENZE + " = ?", new String[]{getYearMonth(data), cf});
+        db.close();
+    }
 
     /************************************************************************************************
      * Metodi di comodo.
@@ -710,9 +805,30 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return calendario;
     }
 
+    private Calendar getCalendar(String cal, String format)
+    {
+        Calendar calendario = Calendar.getInstance();
+        java.util.Date thedate = null;
+        try
+        {
+            thedate = new SimpleDateFormat(format).parse(cal);
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
+        if (thedate != null)
+            calendario.setTime(thedate);
+        return calendario;
+    }
+
     private String getDate(Calendar date)
     {
         return getDateTime(date, "yyyy-MM-dd");
+    }
+
+    private String getYearMonth(Calendar date)
+    {
+        return getDateTime(date, "yyyyMM");
     }
 
     /**

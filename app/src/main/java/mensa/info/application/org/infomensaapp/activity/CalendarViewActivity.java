@@ -126,7 +126,7 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData)
     {
-        final TextView mTextView = (TextView) findViewById(R.id.textList);
+        final TextView mTextView = (TextView) findViewById(R.id.title);
 
         switch (resultCode)
         {

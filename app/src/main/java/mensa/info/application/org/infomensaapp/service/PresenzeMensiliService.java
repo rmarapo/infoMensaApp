@@ -78,10 +78,6 @@ public class PresenzeMensiliService extends DownloadAbstractService
                     day = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), k + 1);
                     pp = new Presenza(day, cf);
                     dayList.add(pp);
-
-                    // per la scrittura sul dbase scrivo i record presenze.
-                    Log.w(TAG, "dayList Size: " + new SimpleDateFormat("yyyyMMdd").format(day.getTime()));
-
                 }
 
             }
@@ -103,8 +99,7 @@ public class PresenzeMensiliService extends DownloadAbstractService
         Calendar presenzaMensile = Calendar.getInstance();
         presenzaMensile.setTimeInMillis(data);
         List<Presenza> allPresenze = db.getPresenzeMensiliByDataCf(presenzaMensile, cf);
-//
-        Log.w(this.getClass().getName(), "trovate nro presenze; " + allPresenze.size());
+
         // se ci sono presenze le ritorno.
         if (allPresenze != null && allPresenze.size() > 0)
         {
@@ -121,13 +116,16 @@ public class PresenzeMensiliService extends DownloadAbstractService
      * @return
      */
     @Override
-    protected void storeData(Object data)
+    protected void storeData(Intent intent, Object data)
     {
         List<Presenza> lpresenza = (List<Presenza>) data;
-        Log.w(this.getClass().getName(), "SCRIVO IL MENU su database: " + lpresenza.size());
+        Long mydata = intent.getLongExtra("data", 0);
+        String cf = intent.getStringExtra("cf");
 
         DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
         Presenza pp = null;
+        // cancello preventivamente il database con le presenze.
+        db.deletePresenzeMeseByCfDate(cf, mydata);
         for (int i = 0; i < lpresenza.size(); i++)
         {
             pp = lpresenza.get(i);

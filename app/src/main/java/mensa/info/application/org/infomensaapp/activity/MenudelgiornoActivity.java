@@ -50,6 +50,8 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menudelgiorno);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         this.mReceiver = new DownloadResultReceiver(new Handler());
         this.mReceiver.setReceiver(this);
@@ -87,9 +89,9 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
     private void startMenuManager()
     {
         final ListView mListView = (ListView) findViewById(R.id.pastoList);
-        final TextView mTextView = (TextView) findViewById(R.id.textList);
+        final TextView mTextView = (TextView) findViewById(R.id.title);
 
-        mTextView.append(sdfHuman.format(menu_date.getTime()));
+        mTextView.setText(sdfHuman.format(menu_date.getTime()));
         mTextView.setVisibility(TextView.VISIBLE);
 
         startIntent(this.getApplicationContext());
@@ -117,19 +119,17 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData)
     {
-        final TextView mTextView = (TextView) findViewById(R.id.textList);
+        final TextView mTextView = (TextView) findViewById(R.id.title);
 
         switch (resultCode)
         {
             case DownloadAbstractService.STATUS_RUNNING:
-//                setProgressBarIndeterminateVisibility(true);
-                mTextView.setText("sto elaborando...");
+                setProgressBarIndeterminateVisibility(true);
                 mTextView.setVisibility(TextView.VISIBLE);
                 break;
             case DownloadAbstractService.STATUS_FINISHED:
                 /* Hide progress & extract result from bundle */
                 setProgressBarIndeterminateVisibility(false);
-                mTextView.setText("sto recuperando i dati...");
                 Object objallMenu = null;
                 try
                 {
@@ -143,11 +143,8 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
                 }
                 List<Menu> allMenu = (List<mensa.info.application.org.infomensaapp.sql.model.Menu>) objallMenu;
 
-
                 // TODO da capire come fare per fare un adapter.
                 final ListView mListView = (ListView) findViewById(R.id.pastoList);
-                mTextView.setText(sdfHuman.format(menu_date.getTime()));
-                mTextView.setVisibility(TextView.VISIBLE);
 
                 String[] results = new String[allMenu.size()];
 

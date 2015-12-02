@@ -31,6 +31,8 @@ public abstract class DownloadAbstractService extends IntentService implements D
     public static final int STATUS_FINISHED = 1;
     public static final int STATUS_ERROR = 2;
 
+    private Intent myintent = null;
+
 
     /**
      * Creo un IntentService.
@@ -45,6 +47,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
     @Override
     protected void onHandleIntent(Intent intent)
     {
+        myintent = intent;
         Log.w(TAG, "Service Started!");
 
         // prendo la classe di receiver
@@ -133,7 +136,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
             Object results = parseResult(response);
 
             // chiamata alla classe implementativa per lo store dei dati su database locale.
-            storeData(results);
+            storeData(this.myintent, results);
 
             return results;
         } else
@@ -185,7 +188,7 @@ public abstract class DownloadAbstractService extends IntentService implements D
     protected abstract Object retriveDataFromDbase(Intent intent);
 
     // metodo per lo store dei dati.
-    protected abstract void storeData(Object data);
+    protected abstract void storeData(Intent intent, Object data);
 
 
 }

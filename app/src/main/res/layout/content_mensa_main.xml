@@ -12,23 +12,4 @@
                 tools:context=".MensaMainActivity"
                 tools:showIn="@layout/app_bar_mensa_main">
 
-    <!--<TextView-->
-        <!--android:id="@+id/textList"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:visibility="invisible"-->
-        <!--android:text="@string/header_list"/>-->
-
-    <!--<ListView-->
-        <!--android:id="@+id/pastoList"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/textList"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="15dp" />-->
-
-
 </RelativeLayout>
