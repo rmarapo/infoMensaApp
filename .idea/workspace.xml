@@ -98,15 +98,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MensaMainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MensaMainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MensaMainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="64" column="166" selection-start-line="64" selection-start-column="166" selection-end-line="64" selection-end-column="166" />
+            <state vertical-scroll-proportion="0.6334842">
+              <caret line="87" column="70" selection-start-line="87" selection-start-column="70" selection-end-line="87" selection-end-column="70" />
               <folding>
-                <element signature="e#3247#3278#0" expanded="true" />
-                <element signature="e#3280#3312#0" expanded="true" />
-                <element signature="e#9834#9866#0" expanded="true" />
+                <element signature="e#3079#3110#0" expanded="true" />
+                <element signature="e#3112#3144#0" expanded="true" />
+                <element signature="e#9666#9698#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -124,10 +124,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MenudelgiornoActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MenudelgiornoActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MenudelgiornoActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.26546004">
+            <state vertical-scroll-proportion="0.0">
               <caret line="105" column="24" selection-start-line="105" selection-start-column="24" selection-end-line="105" selection-end-column="24" />
               <folding />
             </state>
@@ -2635,7 +2635,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="807" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297362" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32561505" sideWeight="0.49532127" order="12" side_tool="false" content_ui="tabs" />
@@ -2654,7 +2654,7 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3299566" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29552716" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29552716" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
@@ -2717,7 +2717,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MensaMainActivity.java</url>
-          <line>327</line>
+          <line>325</line>
           <properties />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
@@ -3176,23 +3176,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MensaMainActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MenudelgiornoActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="166" selection-start-line="64" selection-start-column="166" selection-end-line="64" selection-end-column="166" />
-          <folding>
-            <element signature="e#3247#3278#0" expanded="true" />
-            <element signature="e#3280#3312#0" expanded="true" />
-            <element signature="e#9834#9866#0" expanded="true" />
-          </folding>
+          <caret line="105" column="24" selection-start-line="105" selection-start-column="24" selection-end-line="105" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MenudelgiornoActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/mensa/info/application/org/infomensaapp/activity/MensaMainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.26546004">
-          <caret line="105" column="24" selection-start-line="105" selection-start-column="24" selection-end-line="105" selection-end-column="24" />
-          <folding />
+        <state vertical-scroll-proportion="0.6334842">
+          <caret line="87" column="70" selection-start-line="87" selection-start-column="70" selection-end-line="87" selection-end-column="70" />
+          <folding>
+            <element signature="e#3079#3110#0" expanded="true" />
+            <element signature="e#3112#3144#0" expanded="true" />
+            <element signature="e#9666#9698#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
