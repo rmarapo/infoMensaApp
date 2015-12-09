@@ -101,9 +101,9 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
     {
         // recupero il codice fiscale dalla login.
         String cf = Menu.PASTO_NORMALE;
-        List<Login> lLogin = db.getLoginDefault();
-        if (lLogin!= null && lLogin.size()>0)
-            cf = lLogin.get(0).getCf();
+        Login lLogin = db.getLoginDefault();
+        if (lLogin != null && lLogin.getCf().length() > 0)
+            cf = lLogin.getCf();
         /* Starting Download Service */
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, MenuDelGiornoService.class);
         /* Send optional extras to Download IntentService */

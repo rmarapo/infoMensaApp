@@ -106,9 +106,9 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
 
         // recupero il codice fiscale dalla login.
         String cf = Menu.PASTO_NORMALE;
-        List<Login> lLogin = db.getLoginDefault();
-        if (lLogin != null && lLogin.size() > 0)
-            cf = lLogin.get(0).getCf();
+        Login lg = db.getLoginDefault();
+        if (lg != null && lg.getCf().length() > 0)
+            cf = lg.getCf();
         /* Starting Download Service */
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, PresenzeMensiliService.class);
         /* Send optional extras to Download IntentService */

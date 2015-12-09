@@ -61,11 +61,11 @@ public class LoginActivity extends AppCompatActivity
         this.db = new DatabaseHelper(this.getApplicationContext());
         if (this.db.isLogin())
         {
-            List<Login> logins = this.db.getLoginDefault();
-            if (logins != null && logins.size() > 0)
+            Login logins = this.db.getLoginDefault();
+            if (logins != null && logins.getCf().length() > 0)
             {
-                mCfView.setText(logins.get(0).getCf());
-                mCiView.setText(logins.get(0).getCi());
+                mCfView.setText(logins.getCf());
+                mCiView.setText(logins.getCi());
             }
         }
 
@@ -225,10 +225,10 @@ public class LoginActivity extends AppCompatActivity
         @Override
         protected Boolean doInBackground(Void... params)
         {
-            List<Login> logins = mDb.getLoginDefault();
-            if (logins != null && logins.size() > 0)
+            Login logins = mDb.getLoginDefault();
+            if (logins != null && logins.getCf().length() > 0)
             {
-                Login login = logins.get(0);
+                Login login = logins;
                 login.setCi(this.mCi);
                 login.setCf(this.mCf);
                 this.mDb.updateLogin(login);

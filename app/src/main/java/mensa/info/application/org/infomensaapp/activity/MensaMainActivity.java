@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ import mensa.info.application.org.infomensaapp.service.MenuDelGiornoService;
 import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
 import mensa.info.application.org.infomensaapp.service.interfaces.DownloadResultReceiver;
 import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
+import mensa.info.application.org.infomensaapp.sql.model.Login;
 
 public class MensaMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
@@ -58,14 +60,18 @@ public class MensaMainActivity extends AppCompatActivity
 
     private DrawerLayout drawer = null;
 
+    private Login lg = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        this.lg = getLoginDefault();
 
         setContentView(R.layout.activity_mensa_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         if (!isLoginActivated())
             startActivity(new Intent(this, LoginActivity.class));
 
@@ -90,15 +96,34 @@ public class MensaMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        WebView myWebView = (WebView) findViewById(R.id.webview);
+        if (lg != null && lg.getCf() != null)
+            myWebView.loadUrl("https://pagamenti.comune.prato.it/pagamentibinj/servlet/CercaDebitiSct?cfGenitore=" + lg.getCf() + "&cartaIdentita=" + lg.getCi() + "&&codEnte=001&cfBambino=&numeroBadge=");
+        else
+            makeToast("Non hai inserito i dati di login");
+    }
+
+    private Login getLoginDefault()
+    {
+        // dalle banca dati vado a prendere i dati se esistono
+        // non propongo la login altrimenti si.
+        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+
+        return db.getLoginDefault();
+
     }
 
     private boolean isLoginActivated()
     {
         // dalle banca dati vado a prendere i dati se esistono
         // non propongo la login altrimenti si.
-        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
-
-        return db.isLogin();
+        if (lg == null)
+        {
+            DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
+            return db.isLogin();
+        } else
+            return (lg != null);
     }
 
 
