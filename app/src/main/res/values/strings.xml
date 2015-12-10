@@ -20,6 +20,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="title_activity_calendar_view">Calendario presenze a Mensa</string>
     <string name="title_activity_menudelgiorno">Menù del giorno</string>
+    <string name="title_activity_estratto_conto">EstrattoContoActivity</string>
 
 
 </resources>

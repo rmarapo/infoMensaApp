@@ -54,19 +54,17 @@ import mensa.info.application.org.infomensaapp.service.interfaces.DownloadResult
 import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Login;
 
-public class MensaMainActivity extends AppCompatActivity
+public class MensaMainActivity extends AbstractActivity
         implements NavigationView.OnNavigationItemSelectedListener
 {
 
     private DrawerLayout drawer = null;
 
-    private Login lg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.lg = getLoginDefault();
 
         setContentView(R.layout.activity_mensa_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -95,35 +93,20 @@ public class MensaMainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-        WebView myWebView = (WebView) findViewById(R.id.webview);
-        if (lg != null && lg.getCf() != null)
-            myWebView.loadUrl("https://pagamenti.comune.prato.it/pagamentibinj/servlet/CercaDebitiSct?cfGenitore=" + lg.getCf() + "&cartaIdentita=" + lg.getCi() + "&&codEnte=001&cfBambino=&numeroBadge=");
-        else
-            makeToast("Non hai inserito i dati di login");
     }
 
-    private Login getLoginDefault()
-    {
-        // dalle banca dati vado a prendere i dati se esistono
-        // non propongo la login altrimenti si.
-        DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
 
-        return db.getLoginDefault();
-
-    }
 
     private boolean isLoginActivated()
     {
         // dalle banca dati vado a prendere i dati se esistono
         // non propongo la login altrimenti si.
-        if (lg == null)
+        if (getLogin() == null)
         {
             DatabaseHelper db = new DatabaseHelper(this.getApplicationContext());
             return db.isLogin();
         } else
-            return (lg != null);
+            return (getLogin() != null);
     }
 
 
@@ -170,14 +153,15 @@ public class MensaMainActivity extends AppCompatActivity
             startActivity(new Intent(this, CalendarViewActivity.class));
         } else if (id == R.id.nav_conto)
         {
-            startNotifiche();
-//            startActivity(new Intent(this, ContoActivity.class));
+//            startNotifiche();
+
+            startActivity(new Intent(this, EstrattoContoActivity.class));
         } else if (id == R.id.nav_settings)
         {
 //            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_email)
         {
-            copyDatabase();
+//            copyDatabase();
             startEmailIntent();
         }
 
@@ -315,15 +299,5 @@ public class MensaMainActivity extends AppCompatActivity
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, "oggetto: ");
         sendIntent.setType("message/rfc822");
         startActivity(Intent.createChooser(sendIntent, "Invia un messaggio:"));
-    }
-
-    public void makeToast(String text, boolean b)
-    {
-        Toast.makeText(getApplicationContext(), text, (b ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG)).show();
-    }
-
-    public void makeToast(String text)
-    {
-        makeToast(text, true);
     }
 }
