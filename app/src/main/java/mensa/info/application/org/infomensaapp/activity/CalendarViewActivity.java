@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ import mensa.info.application.org.infomensaapp.sql.model.Login;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
 import mensa.info.application.org.infomensaapp.sql.model.Presenza;
 
-public class CalendarViewActivity extends AppCompatActivity implements DownloadResultReceiver.Receiver
+public class CalendarViewActivity extends AbstractActivity implements DownloadResultReceiver.Receiver
 {
 
     private static final String URL_SERVER = "http://10.2.2.10:8080/mensa/"; //Giuseppe.
@@ -61,8 +62,7 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportedToolBar();
 
         // se ci sono prendo i dati dalla banca dati
         this.db = new DatabaseHelper(this.getApplicationContext());
@@ -84,7 +84,6 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
         widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
 
         widget.clearSelection();
-        // richiamo il server per il recupero delle presenze.
 
         startIntent(Calendar.getInstance());
 
@@ -104,6 +103,7 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
     {
         widget.clearSelection();
 
+        setProgressBarIndeterminateVisibility(true);
         // recupero il codice fiscale dalla login.
         String cf = Menu.PASTO_NORMALE;
         Login lg = db.getLoginDefault();
@@ -118,8 +118,6 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
         intent.putExtra("requestId", 112);
         String url = URL_SERVER + "mensa?step=getPresenzeMensili&bean__data=" + date.getTimeInMillis() + "&bean__cf=" + intent.getStringExtra("cf");
         intent.putExtra("url", url);
-
-        Log.w(this.getClass().getName(), "start del service " + url);
         startService(intent);
     }
 
@@ -131,11 +129,11 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
         switch (resultCode)
         {
             case DownloadAbstractService.STATUS_RUNNING:
-                setProgressBarIndeterminateVisibility(true);
+                addProgressBar(true);
                 break;
             case DownloadAbstractService.STATUS_FINISHED:
                 /* Hide progress & extract result from bundle */
-                setProgressBarIndeterminateVisibility(false);
+                addProgressBar(false);
 
                 Calendar calendar = null;
                 List<Presenza> dates = new ArrayList<>();
@@ -160,33 +158,11 @@ public class CalendarViewActivity extends AppCompatActivity implements DownloadR
 
                 break;
             case DownloadAbstractService.STATUS_ERROR:
-                /* Handle the error */
+                addProgressBar(false);
                 String error = resultData.getString(Intent.EXTRA_TEXT);
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                makeToast(error);
                 break;
         }
     }
 
-    /**
-     * Converting byte arrays to objects
-     */
-    static public Object bytes2Object(byte raw[])
-            throws IOException, ClassNotFoundException
-    {
-        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object o = ois.readObject();
-        return o;
-    }
-
-
-    public void makeToast(String text, boolean b)
-    {
-        Toast.makeText(getApplicationContext(), text, (b ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG)).show();
-    }
-
-    public void makeToast(String text)
-    {
-        makeToast(text, true);
-    }
 }

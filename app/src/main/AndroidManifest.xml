@@ -46,13 +46,18 @@
         <activity
             android:name=".activity.MenudelgiornoActivity"
             android:label="@string/title_activity_menudelgiorno"
+            android:parentActivityName=".activity.MensaMainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".activity.EstrattoContoActivity"
             android:label="@string/title_activity_estratto_conto"
+            android:parentActivityName=".activity.MensaMainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.MensaMainActivity" />
     </application>
 
 </manifest>

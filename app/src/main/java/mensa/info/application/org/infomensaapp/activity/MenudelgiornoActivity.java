@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Login;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
-public class MenudelgiornoActivity extends AppCompatActivity implements DownloadResultReceiver.Receiver
+public class MenudelgiornoActivity extends AbstractActivity implements DownloadResultReceiver.Receiver
 {
 
     private DownloadResultReceiver mReceiver;
@@ -50,8 +51,7 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menudelgiorno);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportedToolBar();
 
         this.mReceiver = new DownloadResultReceiver(new Handler());
         this.mReceiver.setReceiver(this);
@@ -124,12 +124,13 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
         switch (resultCode)
         {
             case DownloadAbstractService.STATUS_RUNNING:
-                setProgressBarIndeterminateVisibility(true);
+                // rendo visibile la barra indeterminata
+                addProgressBar(true);
                 mTextView.setVisibility(TextView.VISIBLE);
                 break;
             case DownloadAbstractService.STATUS_FINISHED:
-                /* Hide progress & extract result from bundle */
-                setProgressBarIndeterminateVisibility(false);
+                // nascondo la progressbar
+                addProgressBar(false);
                 Object objallMenu = null;
                 try
                 {
@@ -158,23 +159,12 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
 
                 break;
             case DownloadAbstractService.STATUS_ERROR:
-                /* Handle the error */
-                String error = resultData.getString(Intent.EXTRA_TEXT);
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+                // nascondo la progressbar
+                addProgressBar(false);
+                /* in caso di errore mostro un messaggio */
+                makeToast(resultData.getString(Intent.EXTRA_TEXT));
                 break;
         }
-    }
-
-    /**
-     * Converting byte arrays to objects
-     */
-    static public Object bytes2Object(byte raw[])
-            throws IOException, ClassNotFoundException
-    {
-        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object o = ois.readObject();
-        return o;
     }
 
     public Calendar getMenu_date()
@@ -186,6 +176,5 @@ public class MenudelgiornoActivity extends AppCompatActivity implements Download
     {
         this.menu_date = menu_date;
     }
-
 
 }

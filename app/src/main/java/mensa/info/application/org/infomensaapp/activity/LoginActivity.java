@@ -31,7 +31,7 @@ import mensa.info.application.org.infomensaapp.sql.model.Login;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity
+public class LoginActivity extends AbstractActivity
 {
 
     /**
@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Set up the login form.
         mCfView = (TextView) findViewById(R.id.cf_genitore);
         mCiView = (TextView) findViewById(R.id.ci_genitore);

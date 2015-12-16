@@ -18,13 +18,13 @@ public class EstrattoContoActivity extends AbstractActivity
 {
 
     WebView myWebView = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estratto_conto);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportedToolBar();
 
         myWebView = (WebView) findViewById(R.id.webview);
         myWebView.getSettings().setJavaScriptEnabled(true);
@@ -48,13 +48,6 @@ public class EstrattoContoActivity extends AbstractActivity
         else
             makeToast("Non hai inserito i dati di login");
 
-    }
-
-    public boolean onCreateWindow (WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
-
-        ((WebView.WebViewTransport) resultMsg.obj).setWebView(this.myWebView);
-        resultMsg.sendToTarget();
-        return true;
     }
 
 }
