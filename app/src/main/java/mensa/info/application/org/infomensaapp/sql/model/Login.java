@@ -1,11 +1,14 @@
 package mensa.info.application.org.infomensaapp.sql.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Creato da Giuseppe Grosso in data 18/11/15.
  */
-public class Login extends ModelBean
+public class Login extends ModelBean implements Parcelable
 {
     private String data;
     private String cf;
@@ -74,4 +77,42 @@ public class Login extends ModelBean
         this.ci = ci;
     }
 
+
+    protected Login(Parcel in)
+    {
+        data = in.readString();
+        cf = in.readString();
+        ci = in.readString();
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(data);
+        dest.writeString(cf);
+        dest.writeString(ci);
+
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Login> CREATOR = new Parcelable.Creator<Login>()
+    {
+        @Override
+        public Login createFromParcel(Parcel in)
+        {
+            return new Login(in);
+        }
+
+        @Override
+        public Login[] newArray(int size)
+        {
+            return new Login[size];
+        }
+    };
 }

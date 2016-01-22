@@ -1,6 +1,9 @@
 package mensa.info.application.org.infomensaapp.sql.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Calendar;
 
 import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
@@ -8,7 +11,7 @@ import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
 /**
  * Creato da Giuseppe Grosso in data 16/11/15.
  */
-public class Menu extends ModelBean
+public class Menu extends ModelBean implements Parcelable
 {
     public static final String PASTO_NORMALE = "PASTO_NORMALE";
 
@@ -120,4 +123,16 @@ public class Menu extends ModelBean
         this.consistente = consistente;
     }
 
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeStringArray(new String[] {this.createdat,
+                this.data, this.cf, this.descrizione});
+    }
 }

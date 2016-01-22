@@ -41,7 +41,7 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
     private Calendar menu_date = Calendar.getInstance();
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     private SimpleDateFormat sdfDbase = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat sdfHuman = new SimpleDateFormat("dd/MM/yyyy");
+    private SimpleDateFormat sdfHuman = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
     private DatabaseHelper db = null;
 
