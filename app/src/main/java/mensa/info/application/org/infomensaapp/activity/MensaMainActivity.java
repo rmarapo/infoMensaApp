@@ -96,7 +96,6 @@ public class MensaMainActivity extends AbstractActivity
     }
 
 
-
     private boolean isLoginActivated()
     {
         // dalle banca dati vado a prendere i dati se esistono

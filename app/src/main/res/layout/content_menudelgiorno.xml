@@ -17,7 +17,7 @@
                   android:id="@+id/linear1"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:background="@android:color/darker_gray"
+                  android:background="@android:color/transparent"
                   android:orientation="horizontal" >
 
         <Button
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
             android:text="&lt;&lt;" />
 
         <Button
@@ -44,6 +45,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
             android:text="&gt;&gt;"
             />
 

@@ -4,24 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import mensa.info.application.org.infomensaapp.R;
@@ -44,12 +43,20 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
     private SimpleDateFormat sdfHuman = new SimpleDateFormat("EEEE dd/MM/yyyy");
 
     private DatabaseHelper db = null;
-
+    static final String STATE_DATE = "state_date";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null)
+        {
+            // Restore value of members from saved state
+            menu_date = Calendar.getInstance();
+            menu_date.setTimeInMillis(savedInstanceState.getLong(STATE_DATE));
+        }
         setContentView(R.layout.activity_menudelgiorno);
         setSupportedToolBar();
 
@@ -62,8 +69,10 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
         startMenuManager();
 
         // aggancio gli handler.
-        TextView avanti = (TextView) findViewById(R.id.next);
-        TextView indietro = (TextView) findViewById(R.id.previous);
+        Button avanti = (Button) findViewById(R.id.next);
+        Button indietro = (Button) findViewById(R.id.previous);
+        Button btnDate = (Button) findViewById(R.id.title);
+
         avanti.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -82,13 +91,56 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
                 startMenuManager();
             }
         });
+        btnDate.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new SimpleCalendarDialogFragment().show(getSupportFragmentManager(), "test-simple-calendar");
+            }
+        });
+    }
 
+    public class SimpleCalendarDialogFragment extends DialogFragment implements OnDateSelectedListener
+    {
+         @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            return inflater.inflate(R.layout.dialog_basic, container, false);
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState)
+        {
+            super.onViewCreated(view, savedInstanceState);
+
+            MaterialCalendarView widget = (MaterialCalendarView) view.findViewById(R.id.calendarView);
+
+            widget.setOnDateChangedListener(this);
+        }
+
+        @Override
+        public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected)
+        {
+            setMenu_date(date.getDate());
+            startMenuManager();
+            this.dismiss();
+        }
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        // salvo il dato della data.
+        savedInstanceState.putLong(STATE_DATE, menu_date.getTimeInMillis());
+
+        // richiamo il metodo nativo.
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
     private void startMenuManager()
     {
-        final ListView mListView = (ListView) findViewById(R.id.pastoList);
         final TextView mTextView = (TextView) findViewById(R.id.title);
 
         mTextView.setText(sdfHuman.format(menu_date.getTime()));
@@ -172,9 +224,14 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
         return menu_date;
     }
 
-    public void setMenu_date(Calendar menu_date)
+    public void setMenu_calendar(Calendar menu_date)
     {
         this.menu_date = menu_date;
+    }
+
+    public void setMenu_date(java.util.Date mydate)
+    {
+        this.menu_date.setTime(mydate);
     }
 
 }
