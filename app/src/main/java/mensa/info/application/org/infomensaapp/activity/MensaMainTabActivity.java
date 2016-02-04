@@ -122,7 +122,8 @@ public class MensaMainTabActivity extends AbstractActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
-            return true;
+//            return true;
+            startActivity(new Intent(this, LoginActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -328,20 +329,7 @@ public class MensaMainTabActivity extends AbstractActivity
             return 3;
         }
 
-//        @Override
-//        public CharSequence getPageTitle(int position)
-//        {
-////            switch (position)
-////            {
-////                case 0:
-////                    return "SECTION 1";
-////                case 1:
-////                    return "SECTION 2";
-////                case 2:
-////                    return "SECTION 3";
-////            }
-//            return null;
-//        }
+
     }
 
 }
