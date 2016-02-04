@@ -36,7 +36,6 @@ public class MenuDelGiornoManager
 
     public List<Menu> getMenuDelGiorno(Context context, Calendar data, String cf)
     {
-        Log.d(LOG, "Prendo il menu dal database");
         DatabaseHelper db = new DatabaseHelper(context);
         String sData = MenuDelGiornoManager.getDateTime(data, "yyyy-MM-dd");
         List<Menu> allMenus = db.getPastoPersonaleByDate(sData, cf);
