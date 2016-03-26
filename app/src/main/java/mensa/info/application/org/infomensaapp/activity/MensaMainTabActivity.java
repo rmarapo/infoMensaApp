@@ -16,57 +16,47 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.view.GravityCompat;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import mensa.info.application.org.infomensaapp.R;
-import mensa.info.application.org.infomensaapp.service.MenuDelGiornoService;
-import mensa.info.application.org.infomensaapp.service.interfaces.DownloadAbstractService;
 import mensa.info.application.org.infomensaapp.service.interfaces.DownloadResultReceiver;
 import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
-import mensa.info.application.org.infomensaapp.sql.model.Login;
 
-public class MensaMainActivity extends AbstractActivity
-        implements NavigationView.OnNavigationItemSelectedListener
+public class MensaMainTabActivity extends AbstractActivity
 {
 
     private DrawerLayout drawer = null;
 
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+
+    private int[] tabIcons = {
+            R.drawable.ic_action_menu,
+            R.drawable.ic_action_cal,
+            R.drawable.ic_action_pay
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_mensa_main);
+        setContentView(R.layout.activity_mensa_tab_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -82,17 +72,21 @@ public class MensaMainActivity extends AbstractActivity
                 startEmailIntent();
             }
         });
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        this.drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -128,46 +122,47 @@ public class MensaMainActivity extends AbstractActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
-            return true;
+//            return true;
+            startActivity(new Intent(this, LoginActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item)
-    {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_menugiorno)
-        {
-//            startMenuManager();/**/
-            startActivity(new Intent(this, MenudelgiornoActivity.class));
-        } else if (id == R.id.nav_login)
-        {
-            startActivity(new Intent(this, LoginActivity.class));
-        } else if (id == R.id.nav_presenze)
-        {
-            startActivity(new Intent(this, CalendarViewActivity.class));
-        } else if (id == R.id.nav_conto)
-        {
-//            startNotifiche();
-
-            startActivity(new Intent(this, EstrattoContoActivity.class));
-        } else if (id == R.id.nav_settings)
-        {
-//            startActivity(new Intent(this, SettingsActivity.class));
-        } else if (id == R.id.nav_email)
-        {
-//            copyDatabase();
-            startEmailIntent();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item)
+//    {
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_menugiorno)
+//        {
+////            startMenuManager();/**/
+//            startActivity(new Intent(this, MenudelgiornoActivity.class));
+//        } else if (id == R.id.nav_login)
+//        {
+//            startActivity(new Intent(this, LoginActivity.class));
+//        } else if (id == R.id.nav_presenze)
+//        {
+//            startActivity(new Intent(this, CalendarViewActivity.class));
+//        } else if (id == R.id.nav_conto)
+//        {
+////            startNotifiche();
+//
+//            startActivity(new Intent(this, EstrattoContoActivity.class));
+//        } else if (id == R.id.nav_settings)
+//        {
+////            startActivity(new Intent(this, SettingsActivity.class));
+//        } else if (id == R.id.nav_email)
+//        {
+////            copyDatabase();
+//            startEmailIntent();
+//        }
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
 
     public void copyDatabase()
@@ -233,23 +228,16 @@ public class MensaMainActivity extends AbstractActivity
             return;
         }
 
-        if (this.drawer.isDrawerOpen(GravityCompat.START))
+        this.doubleBackToExitPressedOnce = true;
+        makeToast("Premi ancora Esc per uscire...");
+        new Handler().postDelayed(new Runnable()
         {
-            this.drawer.closeDrawer(GravityCompat.START);
-        } else
-        {
-            this.doubleBackToExitPressedOnce = true;
-            makeToast("Premi ancora Esc per uscire...");
-            new Handler().postDelayed(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
-                {
-                    doubleBackToExitPressedOnce = false;
-                }
-            }, 2000);
-        }
-
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
 
     }
 
@@ -263,8 +251,8 @@ public class MensaMainActivity extends AbstractActivity
     {
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        Intent notificationIntent = new Intent(MensaMainActivity.this, DownloadResultReceiver.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(MensaMainActivity.this, 0, notificationIntent,
+        Intent notificationIntent = new Intent(MensaMainTabActivity.this, DownloadResultReceiver.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(MensaMainTabActivity.this, 0, notificationIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationManager nm = (NotificationManager) this
@@ -299,4 +287,49 @@ public class MensaMainActivity extends AbstractActivity
         sendIntent.setType("message/rfc822");
         startActivity(Intent.createChooser(sendIntent, "Invia un messaggio:"));
     }
+
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter
+    {
+
+        public SectionsPagerAdapter(FragmentManager fm)
+        {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position)
+        {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            if (position == 0)
+            {
+                return MenudelgiornoFragment.newInstance(position + 1);
+            }
+            else if (position == 1)
+            {
+                return MenudelgiornoFragment.newInstance(position + 1);
+            }
+            else if (position == 2)
+            {
+                return EstrattoContoFragment.newInstance(position + 1);
+            }
+
+            return null;
+        }
+
+        @Override
+        public int getCount()
+        {
+            // Show 3 total pages.
+            return 3;
+        }
+
+
+    }
+
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 import mensa.info.application.org.infomensaapp.sql.model.Login;
 import mensa.info.application.org.infomensaapp.sql.model.Menu;
 
-public class MenudelgiornoActivity extends AbstractActivity implements DownloadResultReceiver.Receiver
+public class MenudelgiornoFragment extends AbstractFragment implements DownloadResultReceiver.Receiver
 {
 
     private DownloadResultReceiver mReceiver;
@@ -44,11 +45,25 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
 
     private DatabaseHelper db = null;
     static final String STATE_DATE = "state_date";
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
+    public static MenudelgiornoFragment newInstance(int sectionNumber)
+    {
+        MenudelgiornoFragment fragment = new MenudelgiornoFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        this.rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        Context context = getActivity().getBaseContext();
 
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null)
@@ -57,21 +72,19 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
             menu_date = Calendar.getInstance();
             menu_date.setTimeInMillis(savedInstanceState.getLong(STATE_DATE));
         }
-        setContentView(R.layout.activity_menudelgiorno);
-        setSupportedToolBar();
 
         this.mReceiver = new DownloadResultReceiver(new Handler());
         this.mReceiver.setReceiver(this);
 
         // se ci sono prendo i dati dalla banca dati
-        this.db = new DatabaseHelper(this.getApplicationContext());
+        this.db = new DatabaseHelper(context);
 
         startMenuManager();
 
         // aggancio gli handler.
-        Button avanti = (Button) findViewById(R.id.next);
-        Button indietro = (Button) findViewById(R.id.previous);
-        Button btnDate = (Button) findViewById(R.id.title);
+        Button avanti = (Button) rootView.findViewById(R.id.next);
+        Button indietro = (Button) rootView.findViewById(R.id.previous);
+        Button btnDate = (Button) rootView.findViewById(R.id.title);
 
         avanti.setOnClickListener(new View.OnClickListener()
         {
@@ -96,9 +109,11 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
             @Override
             public void onClick(View v)
             {
-                new SimpleCalendarDialogFragment().show(getSupportFragmentManager(), "test-simple-calendar");
+                new SimpleCalendarDialogFragment().show(getActivity().getSupportFragmentManager(), "test-simple-calendar");
             }
         });
+
+        return rootView;
     }
 
     public class SimpleCalendarDialogFragment extends DialogFragment implements OnDateSelectedListener
@@ -141,12 +156,12 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
 
     private void startMenuManager()
     {
-        final TextView mTextView = (TextView) findViewById(R.id.title);
+        final TextView mTextView = (TextView) rootView.findViewById(R.id.title);
 
         mTextView.setText(sdfHuman.format(menu_date.getTime()));
         mTextView.setVisibility(TextView.VISIBLE);
 
-        startIntent(this.getApplicationContext());
+        startIntent(this.getActivity().getBaseContext());
     }
 
     public void startIntent(Context context)
@@ -157,7 +172,7 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
         if (lLogin != null && lLogin.getCf().length() > 0)
             cf = lLogin.getCf();
         /* Starting Download Service */
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, MenuDelGiornoService.class);
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this.getActivity().getBaseContext(), MenuDelGiornoService.class);
         /* Send optional extras to Download IntentService */
         intent.putExtra("data", sdfDbase.format(menu_date.getTime()));
         intent.putExtra("cf", cf);
@@ -165,24 +180,22 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
         intent.putExtra("requestId", 102);
         intent.putExtra("url", URL_SERVER + "mensa?step=getMenuGiorno&data=" + sdf.format(menu_date.getTime()) + "&cf=" + intent.getStringExtra("cf"));
 
-        startService(intent);
+        this.getActivity().startService(intent);
     }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData)
     {
-        final TextView mTextView = (TextView) findViewById(R.id.title);
+        final TextView mTextView = (TextView) rootView.findViewById(R.id.title);
 
         switch (resultCode)
         {
             case DownloadAbstractService.STATUS_RUNNING:
                 // rendo visibile la barra indeterminata
-                addProgressBar(true);
                 mTextView.setVisibility(TextView.VISIBLE);
                 break;
             case DownloadAbstractService.STATUS_FINISHED:
                 // nascondo la progressbar
-                addProgressBar(false);
                 Object objallMenu = null;
                 try
                 {
@@ -194,10 +207,10 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
                 {
                     e.printStackTrace();
                 }
-                List<Menu> allMenu = (List<mensa.info.application.org.infomensaapp.sql.model.Menu>) objallMenu;
+                List<Menu> allMenu = (List<Menu>) objallMenu;
 
                 // TODO da capire come fare per fare un adapter.
-                final ListView mListView = (ListView) findViewById(R.id.pastoList);
+                final ListView mListView = (ListView) rootView.findViewById(R.id.pastoList);
 
                 String[] results = new String[allMenu.size()];
 
@@ -205,14 +218,13 @@ public class MenudelgiornoActivity extends AbstractActivity implements DownloadR
                     results[i] = allMenu.get(i).getDescrizione();
 
 
-                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, results);
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity().getBaseContext(), android.R.layout.simple_list_item_1, results);
                 mListView.setAdapter(adapter);
 
 
                 break;
             case DownloadAbstractService.STATUS_ERROR:
                 // nascondo la progressbar
-                addProgressBar(false);
                 /* in caso di errore mostro un messaggio */
                 makeToast(resultData.getString(Intent.EXTRA_TEXT));
                 break;
