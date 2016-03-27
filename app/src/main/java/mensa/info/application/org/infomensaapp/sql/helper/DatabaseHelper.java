@@ -243,21 +243,97 @@ public class DatabaseHelper extends SQLiteOpenHelper
         createMenu(db, "2016-04-01", new String[]{"PASTA ALL'OLIO", "TONNO SOTT'OLIO", "FAGIOLI ALL'OLIO", "TORTINA"});
         createMenu(db, "2016-04-02", new String[]{"NON PREVISTO"});
         createMenu(db, "2016-04-03", new String[]{"NON PREVISTO"});
-
+        createMenu(db, "2016-04-04", new String[]{"PASTA AL PESTO", "PROSCIUTTO COTTO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-05", new String[]{"PASTA AL POMODORO", "BOCCONCINI DI POLLO FRITTO", "CAROTE FILANGE'", "BANANA"});
+        createMenu(db, "2016-04-06", new String[]{"RAVIOLI BURRO E SALVIA", "MERLUZZO ALLA LIVORNESE", "FAGIOLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
+        createMenu(db, "2016-04-07", new String[]{"BRUSCHETTA AL POMODORO BIO", "BOCCONCINI DI MOZZARELLA BIO", "INSALATA VERDE BIO", "FRUTTA FRESCA BIO"});
+        createMenu(db, "2016-04-08", new String[]{"RISOTTO DI CAROTE", "POLPETTE DI MANZO AL POMODORO", "ZUCCHINE TRIFOLATE", "BUDINO"});
         createMenu(db, "2016-04-09", new String[]{"NON PREVISTO"});
         createMenu(db, "2016-04-10", new String[]{"NON PREVISTO"});
-
+        createMenu(db, "2016-04-11", new String[]{"GNOCCHI AL POMODORO", "EMMENTHAL E MORTADELLA", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-12", new String[]{"PASTA ALLA PIZZAIOLA", "COSCE DI POLLO ARROSTO", "PURE' DI PATATE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-13", new String[]{"PASTA FREDDA AL TONNO/PASTA ALL'OLIO", "UOVA SODE CON MAIONESE", "INSALATA E POMODORI", "BANANA"});
+        createMenu(db, "2016-04-14", new String[]{"CREMA DI VERDURE E RISO", "LONZA DI MAIALE AL LIMONE", "CAROTE FILANGE' E MAIS", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-15", new String[]{"FUSILLI CON ZUCCHINE E PINOLI", "CROCCHETTE DI MERLUZZO AL FORNO", "PISELLI ALL'OLIO", "SUCCO DI FRUTTA"});
         createMenu(db, "2016-04-16", new String[]{"NON PREVISTO"});
         createMenu(db, "2016-04-17", new String[]{"NON PREVISTO"});
-
+        createMenu(db, "2016-04-18", new String[]{"PASTA AL POMODORO E BASILICO", "TONNO SOTT'OLIO", "FAGIOLI VERDI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-19", new String[]{"PASTA AL BURRO", "POLPETTONE DI MANZO CON POMODORO", "ZUCHINE TRIFOLATE", "BANANA"});
+        createMenu(db, "2016-04-20", new String[]{"CREMA DI CAROTE E PISELLI E CROSTINI/RISO**", "PROSCIUTTO CRUDO/PROSCIUTTO COTTO*", "PATATE ARROSTO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-21", new String[]{"LASAGNE AL PESTO", "PARMIGIANO REGGIANO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-22", new String[]{"RISO AL POMODORO", "SPEZZATINO DI TACCHINO AGLI AGRUMI", "INSALATA VERDE CON MAIS", "SUCCO DI FRUTTA"});
         createMenu(db, "2016-04-23", new String[]{"NON PREVISTO"});
         createMenu(db, "2016-04-24", new String[]{"NON PREVISTO"});
         createMenu(db, "2016-04-25", new String[]{"NON PREVISTO"});
-
+        createMenu(db, "2016-04-26", new String[]{"PASTA AL TONNO", "FRITTATA", "PISELLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
+        createMenu(db, "2016-04-27", new String[]{"PASTA AL PESTO", "PETTO DI POLLO ALLA SALVIA", "PATATE LESSE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-04-28", new String[]{"INSALATA DI RISO/RISO AL POMODORO*", "BASTONCINI DI PESCE", "INSALATA E POMODORI", "BANANA"});
+        createMenu(db, "2016-04-29", new String[]{"PASTA ALL'OLIO", "RICOTTA FILIERA CORTA", "RATATOUILLE DI VERDURA/FAGIOLINI ALL'OLIO*", "TORTINA"});
         createMenu(db, "2016-04-30", new String[]{"NON PREVISTO"});
 
         // MAGGIO
         createMenu(db, "2016-05-01", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-02", new String[]{"PASTA AL PESTO", "PROSCIUTTO COTTO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-03", new String[]{"PASTA AL POMODORO", "BOCCONCINI DI POLLO FRITTO", "CAROTE FILANGE'", "BANANA"});
+        createMenu(db, "2016-05-04", new String[]{"RAVIOLI BURRO E SALVIA", "MERLUZZO ALLA LIVORNESE", "FAGIOLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
+        createMenu(db, "2016-05-05", new String[]{"BRUSCHETTA AL POMODORO BIO", "BOCCONCINI DI MOZZARELLA BIO", "INSALATA VERDE BIO", "FRUTTA FRESCA BIO"});
+        createMenu(db, "2016-05-06", new String[]{"RISOTTO DI CAROTE", "POLPETTE DI MANZO AL POMODORO", "ZUCCHINE TRIFOLATE", "BUDINO"});
+        createMenu(db, "2016-05-07", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-08", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-09", new String[]{"GNOCCHI AL POMODORO", "EMMENTHAL E MORTADELLA", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-10", new String[]{"PASTA ALLA PIZZAIOLA", "COSCE DI POLLO ARROSTO", "PURE' DI PATATE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-11", new String[]{"PASTA FREDDA AL TONNO/PASTA ALL'OLIO", "UOVA SODE CON MAIONESE", "INSALATA E POMODORI", "BANANA"});
+        createMenu(db, "2016-05-12", new String[]{"CREMA DI VERDURE E RISO", "LONZA DI MAIALE AL LIMONE", "CAROTE FILANGE' E MAIS", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-13", new String[]{"FUSILLI CON ZUCCHINE E PINOLI", "CROCCHETTE DI MERLUZZO AL FORNO", "PISELLI ALL'OLIO", "SUCCO DI FRUTTA"});
+        createMenu(db, "2016-05-14", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-15", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-16", new String[]{"PASTA AL POMODORO E BASILICO", "TONNO SOTT'OLIO", "FAGIOLI VERDI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-17", new String[]{"PASTA AL BURRO", "POLPETTONE DI MANZO CON POMODORO", "ZUCHINE TRIFOLATE", "BANANA"});
+        createMenu(db, "2016-05-18", new String[]{"CREMA DI CAROTE E PISELLI E CROSTINI/RISO**", "PROSCIUTTO CRUDO/PROSCIUTTO COTTO*", "PATATE ARROSTO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-19", new String[]{"LASAGNE AL PESTO", "PARMIGIANO REGGIANO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-20", new String[]{"RISO AL POMODORO", "SPEZZATINO DI TACCHINO AGLI AGRUMI", "INSALATA VERDE CON MAIS", "SUCCO DI FRUTTA"});
+        createMenu(db, "2016-05-21", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-22", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-23", new String[]{"TAGLIATELLE PAGLIA E FIENO AL POMODORO", "ARISTA ARROSTO", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-24", new String[]{"PASTA AL TONNO", "FRITTATA", "PISELLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
+        createMenu(db, "2016-05-25", new String[]{"PASTA AL PESTO", "PETTO DI POLLO ALLA SALVIA", "PATATE LESSE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-26", new String[]{"INSALATA DI RISO/RISO AL POMODORO*", "BASTONCINI DI PESCE", "INSALATA E POMODORI", "BANANA"});
+        createMenu(db, "2016-05-27", new String[]{"PASTA ALL'OLIO", "RICOTTA FILIERA CORTA", "RATATOUILLE DI VERDURA/FAGIOLINI ALL'OLIO*", "TORTINA"});
+        createMenu(db, "2016-05-28", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-29", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-05-30", new String[]{"PASTA AL PESTO", "PROSCIUTTO COTTO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-05-31", new String[]{"PASTA AL POMODORO", "BOCCONCINI DI POLLO FRITTO", "CAROTE FILANGE'", "BANANA"});
+
+        // GIUGNO
+        createMenu(db, "2016-06-01", new String[]{"RAVIOLI BURRO E SALVIA", "MERLUZZO ALLA LIVORNESE", "FAGIOLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
+        createMenu(db, "2016-06-02", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-03", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-04", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-05", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-06", new String[]{"GNOCCHI AL POMODORO", "EMMENTHAL E MORTADELLA", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-07", new String[]{"PASTA ALLA PIZZAIOLA", "COSCE DI POLLO ARROSTO", "PURE' DI PATATE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-08", new String[]{"PASTA FREDDA AL TONNO/PASTA ALL'OLIO", "UOVA SODE CON MAIONESE", "INSALATA E POMODORI", "BANANA"});
+        createMenu(db, "2016-06-09", new String[]{"CREMA DI VERDURE E RISO", "LONZA DI MAIALE AL LIMONE", "CAROTE FILANGE' E MAIS", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-10", new String[]{"FUSILLI CON ZUCCHINE E PINOLI", "CROCCHETTE DI MERLUZZO AL FORNO", "PISELLI ALL'OLIO", "SUCCO DI FRUTTA"});
+        createMenu(db, "2016-06-11", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-12", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-13", new String[]{"PASTA AL POMODORO E BASILICO", "TONNO SOTT'OLIO", "FAGIOLI VERDI ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-14", new String[]{"PASTA AL BURRO", "POLPETTONE DI MANZO CON POMODORO", "ZUCHINE TRIFOLATE", "BANANA"});
+        createMenu(db, "2016-06-15", new String[]{"CREMA DI CAROTE E PISELLI E CROSTINI/RISO**", "PROSCIUTTO CRUDO/PROSCIUTTO COTTO*", "PATATE ARROSTO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-16", new String[]{"LASAGNE AL PESTO", "PARMIGIANO REGGIANO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-17", new String[]{"RISO AL POMODORO", "SPEZZATINO DI TACCHINO AGLI AGRUMI", "INSALATA VERDE CON MAIS", "SUCCO DI FRUTTA"});
+        createMenu(db, "2016-06-18", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-19", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-20", new String[]{"TAGLIATELLE PAGLIA E FIENO AL POMODORO", "ARISTA ARROSTO", "CAROTE ALL'OLIO", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-21", new String[]{"PASTA AL TONNO", "FRITTATA", "PISELLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
+        createMenu(db, "2016-06-22", new String[]{"PASTA AL PESTO", "PETTO DI POLLO ALLA SALVIA", "PATATE LESSE", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-23", new String[]{"INSALATA DI RISO/RISO AL POMODORO*", "BASTONCINI DI PESCE", "INSALATA E POMODORI", "BANANA"});
+        createMenu(db, "2016-06-24", new String[]{"PASTA ALL'OLIO", "RICOTTA FILIERA CORTA", "RATATOUILLE DI VERDURA/FAGIOLINI ALL'OLIO*", "TORTINA"});
+        createMenu(db, "2016-06-25", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-26", new String[]{"NON PREVISTO"});
+        createMenu(db, "2016-06-27", new String[]{"PASTA AL PESTO", "PROSCIUTTO COTTO", "POMODORI INSALATARI", "FRUTTA FRESCA"});
+        createMenu(db, "2016-06-28", new String[]{"PASTA AL POMODORO", "BOCCONCINI DI POLLO FRITTO", "CAROTE FILANGE'", "BANANA"});
+        createMenu(db, "2016-06-29", new String[]{"RAVIOLI BURRO E SALVIA", "MERLUZZO ALLA LIVORNESE", "FAGIOLINI ALL'OLIO", "MACEDONIA DI FRUTTA"});
     }
 
     @Override
@@ -796,7 +872,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
             if (data != null)
                 selectQuery += " AND strftime('%Y%m', l." + DATA_PRESENZE + " "
                         + ") = '" + getYearMonth(data) + "'";
-        } else
+        }
+        else
         {
             if (data != null)
                 selectQuery += " AND l." + DATA_PRESENZE + " "
