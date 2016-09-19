@@ -170,40 +170,40 @@ public class MensaMainActivity extends AbstractActivity
     }
 
 
-    public void copyDatabase()
-    {
-        makeToast("connessione: " + isConnectionActivate());
-        try
-        {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-
-            if (sd.canWrite())
-            {
-                String currentDBPath = "data/mensa.info.application.org.infomensaapp/databases/mensaApp";
-
-                String backupDBPath = "Download/copiaMensaApp";
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
-
-                if (currentDB.exists())
-                {
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                }
-                makeToast("Backup Complete");
-            }
-        } catch (Exception e)
-        {
-            Log.w("Settings Backup", e);
-        } finally
-        {
-            Log.w("Fine copia", "fine copia ");
-        }
-    }
+//    public void copyDatabase()
+//    {
+//        makeToast("connessione: " + isConnectionActivate());
+//        try
+//        {
+//            File sd = Environment.getExternalStorageDirectory();
+//            File data = Environment.getDataDirectory();
+//
+//            if (sd.canWrite())
+//            {
+//                String currentDBPath = "data/mensa.info.application.org.infomensaapp/databases/mensaApp";
+//
+//                String backupDBPath = "Download/copiaMensaApp";
+//                File currentDB = new File(data, currentDBPath);
+//                File backupDB = new File(sd, backupDBPath);
+//
+//                if (currentDB.exists())
+//                {
+//                    FileChannel src = new FileInputStream(currentDB).getChannel();
+//                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+//                    dst.transferFrom(src, 0, src.size());
+//                    src.close();
+//                    dst.close();
+//                }
+//                makeToast("Backup Complete");
+//            }
+//        } catch (Exception e)
+//        {
+//            Log.w("Settings Backup", e);
+//        } finally
+//        {
+//            Log.w("Fine copia", "fine copia ");
+//        }
+//    }
 
     private boolean isConnectionActivate()
     {

@@ -1,19 +1,8 @@
 package mensa.info.application.org.infomensaapp.activity;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
 import android.net.MailTo;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -23,18 +12,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
-
 import mensa.info.application.org.infomensaapp.R;
-import mensa.info.application.org.infomensaapp.service.interfaces.DownloadResultReceiver;
 import mensa.info.application.org.infomensaapp.sql.helper.DatabaseHelper;
 
 public class MensaMainTabActivity extends AbstractActivity
@@ -47,7 +29,7 @@ public class MensaMainTabActivity extends AbstractActivity
 
     private int[] tabIcons = {
             R.drawable.ic_action_menu,
-            R.drawable.ic_action_cal,
+//            R.drawable.ic_action_cal,
             R.drawable.ic_action_pay
     };
 
@@ -85,7 +67,7 @@ public class MensaMainTabActivity extends AbstractActivity
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+//        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
 
     }
 
@@ -165,56 +147,56 @@ public class MensaMainTabActivity extends AbstractActivity
 //    }
 
 
-    public void copyDatabase()
-    {
-        makeToast("connessione: " + isConnectionActivate());
-        try
-        {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
+//    public void copyDatabase()
+//    {
+//        makeToast("connessione: " + isConnectionActivate());
+//        try
+//        {
+//            File sd = Environment.getExternalStorageDirectory();
+//            File data = Environment.getDataDirectory();
+//
+//            if (sd.canWrite())
+//            {
+//                String currentDBPath = "data/mensa.info.application.org.infomensaapp/databases/mensaApp";
+//
+//                String backupDBPath = "Download/copiaMensaApp";
+//                File currentDB = new File(data, currentDBPath);
+//                File backupDB = new File(sd, backupDBPath);
+//
+//                if (currentDB.exists())
+//                {
+//                    FileChannel src = new FileInputStream(currentDB).getChannel();
+//                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+//                    dst.transferFrom(src, 0, src.size());
+//                    src.close();
+//                    dst.close();
+//                }
+//                makeToast("Backup Complete");
+//            }
+//        } catch (Exception e)
+//        {
+//            Log.w("Settings Backup", e);
+//        } finally
+//        {
+//            Log.w("Fine copia", "fine copia ");
+//        }
+//    }
 
-            if (sd.canWrite())
-            {
-                String currentDBPath = "data/mensa.info.application.org.infomensaapp/databases/mensaApp";
-
-                String backupDBPath = "Download/copiaMensaApp";
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
-
-                if (currentDB.exists())
-                {
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                    dst.transferFrom(src, 0, src.size());
-                    src.close();
-                    dst.close();
-                }
-                makeToast("Backup Complete");
-            }
-        } catch (Exception e)
-        {
-            Log.w("Settings Backup", e);
-        } finally
-        {
-            Log.w("Fine copia", "fine copia ");
-        }
-    }
-
-    private boolean isConnectionActivate()
-    {
-        ConnectivityManager cm =
-                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
-        boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
-
-        if (isWiFi)
-            makeToast("connessione wifi: " + isWiFi);
-
-        return isConnected;
-    }
+//    private boolean isConnectionActivate()
+//    {
+//        ConnectivityManager cm =
+//                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+//
+//        boolean isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+//
+//        if (isWiFi)
+//            makeToast("connessione wifi: " + isWiFi);
+//
+//        return isConnected;
+//    }
 
 
     boolean doubleBackToExitPressedOnce = false;
@@ -247,35 +229,35 @@ public class MensaMainTabActivity extends AbstractActivity
 
 
     // notifiche
-    public void startNotifiche()
-    {
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        Intent notificationIntent = new Intent(MensaMainTabActivity.this, DownloadResultReceiver.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(MensaMainTabActivity.this, 0, notificationIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-
-        NotificationManager nm = (NotificationManager) this
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Resources res = this.getResources();
-        Notification.Builder builder = new Notification.Builder(this);
-
-        builder.setContentIntent(contentIntent)
-                .setSmallIcon(R.drawable.typeb_calendar_today)
-                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.typeb_calendar_today))
-                .setTicker(res.getString(R.string.app_name))
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
-                .setSound(soundUri)
-                .setContentTitle("Aggiornamento xxxx")
-                .setContentText("ci sono nuovi aggiornamenti per te!");
-
-        Notification n = builder.build();
-
-        nm.notify(11223, n);
-
-    }
+//    public void startNotifiche()
+//    {
+//        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//
+//        Intent notificationIntent = new Intent(MensaMainTabActivity.this, DownloadResultReceiver.class);
+//        PendingIntent contentIntent = PendingIntent.getActivity(MensaMainTabActivity.this, 0, notificationIntent,
+//                PendingIntent.FLAG_CANCEL_CURRENT);
+//
+//        NotificationManager nm = (NotificationManager) this
+//                .getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        Resources res = this.getResources();
+//        Notification.Builder builder = new Notification.Builder(this);
+//
+//        builder.setContentIntent(contentIntent)
+//                .setSmallIcon(R.drawable.typeb_calendar_today)
+//                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.typeb_calendar_today))
+//                .setTicker(res.getString(R.string.app_name))
+//                .setWhen(System.currentTimeMillis())
+//                .setAutoCancel(true)
+//                .setSound(soundUri)
+//                .setContentTitle("Aggiornamento xxxx")
+//                .setContentText("ci sono nuovi aggiornamenti per te!");
+//
+//        Notification n = builder.build();
+//
+//        nm.notify(11223, n);
+//
+//    }
 
     public void startEmailIntent()
     {
@@ -310,11 +292,11 @@ public class MensaMainTabActivity extends AbstractActivity
             {
                 return MenudelgiornoFragment.newInstance(position + 1);
             }
+//            else if (position == 1)
+//            {
+//                return MenudelgiornoFragment.newInstance(position + 1);
+//            }
             else if (position == 1)
-            {
-                return MenudelgiornoFragment.newInstance(position + 1);
-            }
-            else if (position == 2)
             {
                 return EstrattoContoFragment.newInstance(position + 1);
             }
@@ -326,7 +308,7 @@ public class MensaMainTabActivity extends AbstractActivity
         public int getCount()
         {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
 

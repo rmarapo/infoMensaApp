@@ -16,9 +16,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
-import mensa.info.application.org.infomensaapp.sql.model.Menu;
+import mensa.info.application.org.infomensaapp.service.MenuDelGiornoManager;
 
 /**
  * Creato da Giuseppe Grosso in data 13/11/15.
@@ -69,7 +68,13 @@ public abstract class DownloadAbstractService extends IntentService implements D
                 // cerco i dati nel database
                 results = retriveDataFromDbase(intent);
                 // se non li trovo li chiedo al server
-                if (results == null) results = downloadData(url);
+//                if (results == null) results = downloadData(url);
+                if (results == null)
+                {
+                    // prendo i dati del menu del giorno.
+                    MenuDelGiornoManager manager = new MenuDelGiornoManager();
+                    results = manager.getMenuDelGiornoNonPrevisto(this.getApplicationContext());
+                }
 
                 /* rimando i dati indietro all'activity */
                 if (results != null)

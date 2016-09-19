@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +116,7 @@ public class MenudelgiornoFragment extends AbstractFragment implements DownloadR
 
     public class SimpleCalendarDialogFragment extends DialogFragment implements OnDateSelectedListener
     {
-         @Override
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             return inflater.inflate(R.layout.dialog_basic, container, false);
@@ -135,7 +133,7 @@ public class MenudelgiornoFragment extends AbstractFragment implements DownloadR
         }
 
         @Override
-        public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected)
+        public void onDateSelected(MaterialCalendarView widget, CalendarDay date, boolean selected)
         {
             setMenu_date(date.getDate());
             startMenuManager();
@@ -200,10 +198,12 @@ public class MenudelgiornoFragment extends AbstractFragment implements DownloadR
                 try
                 {
                     objallMenu = bytes2Object((byte[]) resultData.get("result"));
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     e.printStackTrace();
-                } catch (ClassNotFoundException e)
+                }
+                catch (ClassNotFoundException e)
                 {
                     e.printStackTrace();
                 }

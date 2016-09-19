@@ -42,6 +42,13 @@ public class MenuDelGiornoManager
         return allMenus;
     }
 
+    public List<Menu> getMenuDelGiornoNonPrevisto(Context context)
+    {
+        DatabaseHelper db = new DatabaseHelper(context);
+        List<Menu> allMenus = db.getMenuNonPrevisto();
+        return allMenus;
+    }
+
     public List<Menu> getMenuDelGiorno(Context context, String data, String cf)
     {
         Log.d(LOG, "Prendo il menu dal database");
